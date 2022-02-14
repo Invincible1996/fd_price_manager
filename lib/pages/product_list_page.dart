@@ -30,7 +30,7 @@ class _ProductListPageState extends State<ProductListPage> {
     DatabaseHelper().initial().then((res) async {
       var count = await ApiService.getCount();
       print(count);
-      var products = await ApiService.queryProducts(pageSize: 10);
+      var products = await ApiService.queryProducts(pageSize: 10, offset: 2);
 
       setState(() {
         _products = products;

@@ -25,13 +25,16 @@ class ApiService {
   /// @des 查询所有商品
   ///
   ///
-  static Future<List<ProductModel>> queryProducts({int pageSize = 0}) async {
+  static Future<List<ProductModel>> queryProducts(
+      {int pageSize = 0, int offset = 0}) async {
     // List list = await DatabaseHelper().db.rawQuery('SELECT color FROM product GROUP BY color');
-    List list = await DatabaseHelper().db.rawQuery('SELECT * FROM product');
+    List list = await DatabaseHelper().db.rawQuery(
+        'SELECT * FROM product limit $pageSize offset(${offset * pageSize})');
     if (list.isNotEmpty) {
       List<ProductModel> products =
           list.map((e) => ProductModel.fromJson(e)).toList();
-      print(products.first.createTime);
+      print(products.first.toJson());
+      print(products.last.toJson());
       return products;
     }
 

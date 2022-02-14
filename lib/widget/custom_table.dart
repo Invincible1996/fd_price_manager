@@ -87,7 +87,19 @@ class CustomTable extends StatelessWidget {
                           Container(
                             alignment: Alignment.center,
                             height: 40,
-                            child: Text('data'),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextButton(
+                                  onPressed: () {},
+                                  child: Text('编辑'),
+                                ),
+                                TextButton(
+                                  onPressed: () {},
+                                  child: Text('删除'),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
