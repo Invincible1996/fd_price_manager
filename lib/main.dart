@@ -1,4 +1,4 @@
-import 'package:fd_price_manager/index_page.dart';
+import 'package:fd_price_manager/pages/index_page.dart';
 import 'package:fd_price_manager/m_colors.dart';
 import 'package:flutter/material.dart';
 

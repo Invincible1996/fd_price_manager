@@ -9,8 +9,16 @@ import 'package:flutter/material.dart';
 class CustomTable extends StatelessWidget {
   final List header;
   final List<ProductModel> data;
+  final int totalCount;
+  final int pageSize;
 
-  const CustomTable({Key? key, required this.header, required this.data}) : super(key: key);
+  const CustomTable({
+    Key? key,
+    required this.header,
+    required this.data,
+    required this.totalCount,
+    required this.pageSize,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +40,7 @@ class CustomTable extends StatelessWidget {
                 children: header
                     .map((e) => Container(
                           height: 40,
-                          decoration: BoxDecoration(
-                            border: Border(
-                                // right: BorderSide(
-                                //   width: 1,
-                                //   color: MColors.divideColor,
-                                // ),
-                                ),
-                          ),
+                          decoration: BoxDecoration(),
                           alignment: Alignment.center,
                           child: Text(
                             '$e',
@@ -97,6 +98,7 @@ class CustomTable extends StatelessWidget {
           ),
           Container(
             height: 45,
+            padding: EdgeInsets.symmetric(horizontal: 15),
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border(
@@ -109,19 +111,89 @@ class CustomTable extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.arrow_back_ios_rounded),
+                InkWell(
+                  borderRadius: BorderRadius.circular(5),
+                  child: Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(color: MColors.divideColor),
+                    ),
+                    child: Icon(Icons.keyboard_arrow_left_rounded, size: 22),
+                  ),
+                  onTap: () {},
                 ),
-                Text('1'),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.arrow_forward_ios_rounded),
+                SizedBox(
+                  width: 10,
+                ),
+                _buildPageIndex(),
+                SizedBox(
+                  width: 10,
+                ),
+                InkWell(
+                  borderRadius: BorderRadius.circular(5),
+                  child: Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(color: MColors.divideColor),
+                    ),
+                    child: Icon(Icons.keyboard_arrow_right_rounded, size: 22),
+                  ),
+                  onTap: () {},
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                InkWell(
+                  onTap: () {},
+                  child: Container(
+                    // width: 100
+                    padding: EdgeInsets.all(4),
+                    height: 30,
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                      width: 1,
+                      color: MColors.divideColor,
+                      // color: MColors.primaryColor,
+                    )),
+                    child: Row(
+                      children: [
+                        Text('10条/页'),
+                        Icon(Icons.arrow_drop_down),
+                      ],
+                    ),
+                  ),
                 )
               ],
             ),
           )
         ],
+      ),
+    );
+  }
+
+  _buildPageIndex() {
+    var totalGroupSize = (totalCount / pageSize).ceilToDouble().toInt();
+    return Wrap(
+      spacing: 10,
+      children: List.generate(
+        totalGroupSize,
+        (index) => InkWell(
+          onTap: () {},
+          child: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(color: MColors.divideColor),
+            ),
+            width: 30,
+            height: 30,
+            child: Text('${index + 1}'),
+          ),
+        ),
       ),
     );
   }

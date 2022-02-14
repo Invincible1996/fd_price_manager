@@ -3,9 +3,9 @@
 /// @author: kevin
 /// @description: dart
 ///
-import 'package:fd_price_manager/assemble_price_page.dart';
+import 'package:fd_price_manager/pages/assemble_price_page.dart';
 import 'package:fd_price_manager/m_colors.dart';
-import 'package:fd_price_manager/product_list_page.dart';
+import 'package:fd_price_manager/pages/product_list_page.dart';
 import 'package:fd_price_manager/service/database_helper.dart';
 import 'package:flutter/material.dart';
 

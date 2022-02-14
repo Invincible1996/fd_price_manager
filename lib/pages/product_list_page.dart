@@ -10,7 +10,7 @@ import 'package:fd_price_manager/service/excel_service.dart';
 import 'package:fd_price_manager/widget/label_text_field.dart';
 import 'package:flutter/material.dart';
 
-import 'widget/custom_table.dart';
+import '../widget/custom_table.dart';
 
 class ProductListPage extends StatefulWidget {
   const ProductListPage({Key? key}) : super(key: key);
@@ -21,15 +21,20 @@ class ProductListPage extends StatefulWidget {
 
 class _ProductListPageState extends State<ProductListPage> {
   List<ProductModel> _products = [];
+  int _totalCount = 0;
+  int pageSize = 10;
 
   @override
   initState() {
     super.initState();
     DatabaseHelper().initial().then((res) async {
-      var products = await ApiService.queryProducts();
+      var count = await ApiService.getCount();
+      print(count);
+      var products = await ApiService.queryProducts(pageSize: 10);
 
       setState(() {
         _products = products;
+        _totalCount = count;
       });
 
       ApiService.queryColors();
@@ -123,6 +128,8 @@ class _ProductListPageState extends State<ProductListPage> {
                 child: CustomTable(
                   header: ['商品名称', '单价', '规格', '操作'],
                   data: _products,
+                  totalCount: _totalCount,
+                  pageSize: pageSize,
                 ),
               ),
             )
