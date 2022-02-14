@@ -3,6 +3,9 @@
 /// @author: kevin
 /// @description: dart
 import 'package:fd_price_manager/m_colors.dart';
+import 'package:fd_price_manager/service/api_service.dart';
+import 'package:fd_price_manager/service/database_helper.dart';
+import 'package:fd_price_manager/service/excel_service.dart';
 import 'package:fd_price_manager/widget/label_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +22,9 @@ class _ProductListPageState extends State<ProductListPage> {
   @override
   initState() {
     super.initState();
+    DatabaseHelper().initial().then((res) {
+      ApiService.queryProducts();
+    });
   }
 
   @override
@@ -76,7 +82,9 @@ class _ProductListPageState extends State<ProductListPage> {
                   Row(
                     children: [
                       ElevatedButton.icon(
-                        onPressed: () {},
+                        onPressed: () {
+                          ExcelService.import();
+                        },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(120, 45),
                         ),
