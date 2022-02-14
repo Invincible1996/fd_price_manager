@@ -52,48 +52,60 @@ class CustomTable extends StatelessWidget {
               ),
             ],
           ),
-          Table(
-            children: data
-                .map(
-                  (e) => TableRow(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border(
-                        bottom: BorderSide(
-                          width: 1,
-                          color: MColors.divideColor,
+          Expanded(
+            child: SingleChildScrollView(
+              child: Table(
+                children: data
+                    .map(
+                      (e) => TableRow(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border(
+                            bottom: BorderSide(
+                              width: 1,
+                              color: MColors.divideColor,
+                            ),
+                          ),
                         ),
+                        children: [
+                          Container(
+                            alignment: Alignment.center,
+                            height: 40,
+                            child: Text('${e.name}'),
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            height: 40,
+                            child: Text('${e.color}'),
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            height: 40,
+                            child: Text('${e.price}'),
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            height: 40,
+                            child: Text('data'),
+                          ),
+                        ],
                       ),
-                    ),
-                    children: [
-                      Container(
-                        alignment: Alignment.center,
-                        height: 40,
-                        child: Text('${e.name}'),
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        height: 40,
-                        child: Text('${e.color}'),
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        height: 40,
-                        child: Text('${e.price}'),
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        height: 40,
-                        child: Text('data'),
-                      ),
-                    ],
-                  ),
-                )
-                .toList(),
+                    )
+                    .toList(),
+              ),
+            ),
           ),
           Container(
             height: 45,
-            color: Colors.white,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                top: BorderSide(
+                  width: 1,
+                  color: MColors.divideColor,
+                ),
+              ),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [

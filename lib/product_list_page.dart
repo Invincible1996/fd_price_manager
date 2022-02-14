@@ -118,17 +118,14 @@ class _ProductListPageState extends State<ProductListPage> {
               ),
             ),
             Expanded(
-                child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  CustomTable(
-                    header: ['商品名称', '单价', '规格', '操作'],
-                    data: _products,
-                  ),
-                ],
+              child: Container(
+                // padding: EdgeInsets.symmetric(horizontal: 16),
+                child: CustomTable(
+                  header: ['商品名称', '单价', '规格', '操作'],
+                  data: _products,
+                ),
               ),
-            ))
+            )
           ],
         ),
       ),

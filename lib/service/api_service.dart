@@ -14,7 +14,7 @@ class ApiService {
   ///
   static Future<List<ProductModel>> queryProducts() async {
     // List list = await DatabaseHelper().db.rawQuery('SELECT color FROM product GROUP BY color');
-    List list = await DatabaseHelper().db.rawQuery('SELECT * FROM product limit 10');
+    List list = await DatabaseHelper().db.rawQuery('SELECT * FROM product');
     List<ProductModel> products = list.map((e) => ProductModel.fromJson(e)).toList();
 
     print(products.first.createTime);
