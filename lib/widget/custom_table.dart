@@ -3,11 +3,12 @@
 /// @author: kevin
 /// @description: dart
 import 'package:fd_price_manager/m_colors.dart';
+import 'package:fd_price_manager/model/product_model.dart';
 import 'package:flutter/material.dart';
 
 class CustomTable extends StatelessWidget {
   final List header;
-  final List data;
+  final List<ProductModel> data;
 
   const CustomTable({Key? key, required this.header, required this.data}) : super(key: key);
 
@@ -68,17 +69,17 @@ class CustomTable extends StatelessWidget {
                       Container(
                         alignment: Alignment.center,
                         height: 40,
-                        child: Text('${e['name']}'),
+                        child: Text('${e.name}'),
                       ),
                       Container(
                         alignment: Alignment.center,
                         height: 40,
-                        child: Text('${e['color']}'),
+                        child: Text('${e.color}'),
                       ),
                       Container(
                         alignment: Alignment.center,
                         height: 40,
-                        child: Text('${e['price']}'),
+                        child: Text('${e.price}'),
                       ),
                       Container(
                         alignment: Alignment.center,

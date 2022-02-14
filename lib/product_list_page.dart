@@ -3,6 +3,7 @@
 /// @author: kevin
 /// @description: dart
 import 'package:fd_price_manager/m_colors.dart';
+import 'package:fd_price_manager/model/product_model.dart';
 import 'package:fd_price_manager/service/api_service.dart';
 import 'package:fd_price_manager/service/database_helper.dart';
 import 'package:fd_price_manager/service/excel_service.dart';
@@ -19,11 +20,20 @@ class ProductListPage extends StatefulWidget {
 }
 
 class _ProductListPageState extends State<ProductListPage> {
+  List<ProductModel> _products = [];
+
   @override
   initState() {
     super.initState();
-    DatabaseHelper().initial().then((res) {
-      ApiService.queryProducts();
+    DatabaseHelper().initial().then((res) async {
+      var products = await ApiService.queryProducts();
+
+      setState(() {
+        _products = products;
+      });
+
+      ApiService.queryColors();
+      ApiService.queryProductNames();
     });
   }
 
@@ -114,53 +124,7 @@ class _ProductListPageState extends State<ProductListPage> {
                 children: [
                   CustomTable(
                     header: ['商品名称', '单价', '规格', '操作'],
-                    data: [
-                      {
-                        'name': 'iPhone',
-                        'price': 12.03,
-                        'color': 'A7',
-                      },
-                      {
-                        'name': 'iPhone',
-                        'price': 12.03,
-                        'color': 'A7',
-                      },
-                      {
-                        'name': 'iPhone',
-                        'price': 12.03,
-                        'color': 'A7',
-                      },
-                      {
-                        'name': 'iPhone',
-                        'price': 12.03,
-                        'color': 'A7',
-                      },
-                      {
-                        'name': 'iPhone',
-                        'price': 12.03,
-                        'color': 'A7',
-                      },
-                      {
-                        'name': 'iPhone13pro',
-                        'price': 12.03,
-                        'color': 'A7',
-                      },
-                      {
-                        'name': 'iPhone',
-                        'price': 12.03,
-                        'color': 'A7',
-                      },
-                      {
-                        'name': 'iPhone',
-                        'price': 12.03,
-                        'color': 'A7',
-                      },
-                      {
-                        'name': 'iPhone',
-                        'price': 12.03,
-                        'color': 'A7',
-                      },
-                    ],
+                    data: _products,
                   ),
                 ],
               ),

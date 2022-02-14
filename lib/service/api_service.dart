@@ -1,3 +1,4 @@
+import 'package:fd_price_manager/model/product_model.dart';
 import 'package:fd_price_manager/service/database_helper.dart';
 
 ///
@@ -11,9 +12,29 @@ class ApiService {
   /// @des 查询所有商品
   ///
   ///
-  static queryProducts() async {
+  static Future<List<ProductModel>> queryProducts() async {
     // List list = await DatabaseHelper().db.rawQuery('SELECT color FROM product GROUP BY color');
-    List list = await DatabaseHelper().db.rawQuery('SELECT count(*) FROM product');
-    print(list);
+    List list = await DatabaseHelper().db.rawQuery('SELECT * FROM product limit 10');
+    List<ProductModel> products = list.map((e) => ProductModel.fromJson(e)).toList();
+
+    print(products.first.createTime);
+
+    return products;
+  }
+
+  ///
+  ///@desc 查询所有的颜色
+  ///
+  static queryColors() async {
+    List list = await DatabaseHelper().db.rawQuery('select distinct color from product');
+    print(list.length);
+  }
+
+  ///
+  /// @
+  ///
+  static queryProductNames() async {
+    List list = await DatabaseHelper().db.rawQuery('select distinct name from product');
+    print(list.length);
   }
 }

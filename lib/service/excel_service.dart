@@ -36,27 +36,28 @@ class ExcelService {
 
         List rows = excel.tables[table]?.rows ?? [];
 
-        for (var i = 0; i < rows.length; i++) {
+        for (var i = 0; i < 35; i++) {
           if (i > 0) {
             var item = rows[i];
-            // print(item);
-            var lastSeparator = i == rows.length - 1 ? ";" : ",";
+            print(item);
+            var lastSeparator = i == 34 ? ";" : ",";
             sql
               ..write("(")
               ..write("\"${item[1].value}\",")
               ..write("\"${item[2].value}\",")
-              ..write("${item[3].value})$lastSeparator");
+              ..write("${item[3]?.value ?? 0.0},")
+              ..write("\"${item[4]?.value ?? ''}\")$lastSeparator");
             // print(rows[i]);
             // print(item[2].value);
           }
         }
       }
 
-      // print(sql);
+      print(sql);
 
       DatabaseHelper().initial().then((res) {
         // DatabaseHelper().db.execute("""INSERT INTO products(name, color, price) VALUES("三位面板带架","雕琢灰",12);""");
-        DatabaseHelper().db.execute('INSERT INTO product(name, color, price) VALUES${sql.toString()}');
+        DatabaseHelper().db.execute('INSERT INTO product(name, color, price,description) VALUES${sql.toString()}');
       });
     } else {
       // User canceled the picker
