@@ -3,8 +3,8 @@
 /// @author: kevin
 /// @description: dart
 ///
-import 'package:fd_price_manager/pages/assemble_price_page.dart';
 import 'package:fd_price_manager/m_colors.dart';
+import 'package:fd_price_manager/pages/assemble_price_page.dart';
 import 'package:fd_price_manager/pages/product_list_page.dart';
 import 'package:fd_price_manager/service/database_helper.dart';
 import 'package:flutter/material.dart';
@@ -45,11 +45,13 @@ class _IndexPageState extends State<IndexPage> {
               width: 200,
               // color: Colors.red,
               decoration: BoxDecoration(
-                  border: Border(
-                      right: BorderSide(
-                width: 1,
-                color: Colors.grey,
-              ))),
+                border: Border(
+                  right: BorderSide(
+                    width: 1,
+                    color: MColors.divideColor,
+                  ),
+                ),
+              ),
               child: Column(
                 children: [
                   Container(

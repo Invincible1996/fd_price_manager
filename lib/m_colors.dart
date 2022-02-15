@@ -10,16 +10,16 @@ class MColors {
   static const MaterialColor primaryColor = MaterialColor(
     0xFF0050ff,
     <int, Color>{
-      50: Color(0xFF0E7AC7),
-      100: Color(0xFF0E7AC7),
-      200: Color(0xFF0E7AC7),
-      300: Color(0xFF0E7AC7),
-      400: Color(0xFF0E7AC7),
-      500: Color(0xFF0E7AC7),
-      600: Color(0xFF0E7AC7),
-      700: Color(0xFF0E7AC7),
-      800: Color(0xFF0E7AC7),
-      900: Color(0xFF0E7AC7),
+      50: Color(0xFF027AFF),
+      100: Color(0xFF027AFF),
+      200: Color(0xFF027AFF),
+      300: Color(0xFF027AFF),
+      400: Color(0xFF027AFF),
+      500: Color(0xFF027AFF),
+      600: Color(0xFF027AFF),
+      700: Color(0xFF027AFF),
+      800: Color(0xFF027AFF),
+      900: Color(0xFF027AFF),
     },
   );
 

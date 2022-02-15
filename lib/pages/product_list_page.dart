@@ -7,7 +7,8 @@ import 'package:fd_price_manager/model/product_model.dart';
 import 'package:fd_price_manager/service/api_service.dart';
 import 'package:fd_price_manager/service/database_helper.dart';
 import 'package:fd_price_manager/service/excel_service.dart';
-import 'package:fd_price_manager/widget/label_text_field.dart';
+import 'package:fd_price_manager/widget/custom_select.dart';
+import 'package:fd_price_manager/widget/select.dart';
 import 'package:flutter/material.dart';
 
 import '../widget/custom_table.dart';
@@ -19,10 +20,11 @@ class ProductListPage extends StatefulWidget {
   _ProductListPageState createState() => _ProductListPageState();
 }
 
-class _ProductListPageState extends State<ProductListPage> {
+class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAliveClientMixin {
   List<ProductModel> _products = [];
   int _totalCount = 0;
-  int pageSize = 10;
+  int _pageSize = 20;
+  int _offset = 0;
 
   @override
   initState() {
@@ -30,7 +32,7 @@ class _ProductListPageState extends State<ProductListPage> {
     DatabaseHelper().initial().then((res) async {
       var count = await ApiService.getCount();
       print(count);
-      var products = await ApiService.queryProducts(pageSize: 10, offset: 2);
+      var products = await ApiService.queryProducts(pageSize: _pageSize, offset: _offset);
 
       setState(() {
         _products = products;
@@ -46,7 +48,12 @@ class _ProductListPageState extends State<ProductListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ProductListPage'),
+        elevation: 0.5,
+        backgroundColor: Colors.white,
+        title: Text(
+          'ProductListPage',
+          style: TextStyle(color: MColors.textColor),
+        ),
         centerTitle: false,
       ),
       body: Container(
@@ -56,10 +63,10 @@ class _ProductListPageState extends State<ProductListPage> {
             Container(
               height: 120,
               padding: EdgeInsets.all(10),
-              margin: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 10,
-              ),
+              // margin: const EdgeInsets.symmetric(
+              //   horizontal: 16,
+              //   vertical: 10,
+              // ),
               decoration: const BoxDecoration(
                 color: Colors.white,
               ),
@@ -68,22 +75,40 @@ class _ProductListPageState extends State<ProductListPage> {
                 children: [
                   Row(
                     children: [
-                      LabelTextField(
-                        onChange: (String text) {},
-                        placeholderText: '请输入商品名称',
-                        label: '名称',
+                      // LabelTextField(
+                      //   onChange: (String text) {},
+                      //   placeholderText: '请输入商品名称',
+                      //   label: '名称',
+                      // ),
+                      // SizedBox(
+                      //   width: 20,
+                      // ),
+                      // LabelTextField(
+                      //   onChange: (String text) {},
+                      //   placeholderText: '请输入商品规格',
+                      //   label: '规格',
+                      // ),
+                      // SizedBox(
+                      //   width: 10,
+                      // ),
+
+                      CustomSelect<String>(
+                        title: '颜色',
+                        onItemSelected: (String value) {},
+                        options: ['红色', '绿色', '蓝色', '黄色', '紫色'],
                       ),
-                      SizedBox(
-                        width: 20,
+                      SizedBox(width: 20),
+                      CustomSelect<int>(
+                        width: 120,
+                        selectType: SelectType.Search,
+                        onSearch: (String text) async {
+                          print(text);
+                        },
+                        options: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                        title: '规格',
+                        onItemSelected: (String value) {},
                       ),
-                      LabelTextField(
-                        onChange: (String text) {},
-                        placeholderText: '请输入商品规格',
-                        label: '规格',
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
+                      SizedBox(width: 20),
                       ElevatedButton.icon(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
@@ -112,24 +137,67 @@ class _ProductListPageState extends State<ProductListPage> {
                       ElevatedButton.icon(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
+                          primary: Colors.red,
                           minimumSize: const Size(120, 45),
                         ),
-                        icon: Icon(Icons.cloud_upload),
-                        label: const Text('导入商品数据'),
+                        icon: Icon(Icons.dangerous),
+                        label: const Text('清空商品数据'),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
+            SizedBox(
+              height: 10,
+            ),
             Expanded(
               child: Container(
                 // padding: EdgeInsets.symmetric(horizontal: 16),
                 child: CustomTable(
+                  selectedIndex: _offset,
                   header: ['商品名称', '单价', '规格', '操作'],
                   data: _products,
                   totalCount: _totalCount,
-                  pageSize: pageSize,
+                  pageSize: _pageSize,
+                  onTapNext: () async {
+                    var totalGroupSize = (_totalCount / _pageSize).ceilToDouble().toInt();
+                    if (_offset == totalGroupSize - 1) {
+                      return;
+                    }
+                    var products = await ApiService.queryProducts(
+                      offset: _offset + 1,
+                      pageSize: _pageSize,
+                    );
+                    setState(() {
+                      _offset += 1;
+                      _products = products;
+                    });
+                  },
+                  onTapPrevious: () async {
+                    if (_offset == 0) {
+                      return;
+                    }
+                    var products = await ApiService.queryProducts(
+                      offset: _offset - 1,
+                      pageSize: _pageSize,
+                    );
+                    setState(() {
+                      _offset -= 1;
+                      _products = products;
+                    });
+                  },
+                  onTapPageIndex: (index) async {
+                    print(int);
+                    var products = await ApiService.queryProducts(
+                      offset: index,
+                      pageSize: _pageSize,
+                    );
+                    setState(() {
+                      _offset = index;
+                      _products = products;
+                    });
+                  },
                 ),
               ),
             )
@@ -143,4 +211,7 @@ class _ProductListPageState extends State<ProductListPage> {
   void dispose() {
     super.dispose();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

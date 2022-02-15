@@ -4,6 +4,8 @@
 /// @description: dart
 import 'package:flutter/material.dart';
 
+import '../m_colors.dart';
+
 class AssemblePricePage extends StatefulWidget {
   const AssemblePricePage({Key? key}) : super(key: key);
 
@@ -20,9 +22,17 @@ class _AssemblePricePageState extends State<AssemblePricePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('AssemblePricePage')),
+      appBar: AppBar(
+        elevation: 0.5,
+        backgroundColor: Colors.white,
+        centerTitle: false,
+        title: Text(
+          'AssemblePricePage',
+          style: TextStyle(color: MColors.textColor),
+        ),
+      ),
       body: Container(
-        color: Colors.white,
+        color: MColors.bgColor,
       ),
     );
   }

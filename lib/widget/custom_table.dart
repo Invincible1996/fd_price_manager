@@ -11,6 +11,10 @@ class CustomTable extends StatelessWidget {
   final List<ProductModel> data;
   final int totalCount;
   final int pageSize;
+  final int selectedIndex;
+  final Function(int) onTapPageIndex;
+  final Function() onTapPrevious;
+  final Function() onTapNext;
 
   const CustomTable({
     Key? key,
@@ -18,6 +22,10 @@ class CustomTable extends StatelessWidget {
     required this.data,
     required this.totalCount,
     required this.pageSize,
+    required this.onTapPageIndex,
+    required this.onTapPrevious,
+    required this.onTapNext,
+    required this.selectedIndex,
   }) : super(key: key);
 
   @override
@@ -134,7 +142,9 @@ class CustomTable extends StatelessWidget {
                     ),
                     child: Icon(Icons.keyboard_arrow_left_rounded, size: 22),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    onTapPrevious();
+                  },
                 ),
                 SizedBox(
                   width: 10,
@@ -154,7 +164,9 @@ class CustomTable extends StatelessWidget {
                     ),
                     child: Icon(Icons.keyboard_arrow_right_rounded, size: 22),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    onTapNext();
+                  },
                 ),
                 SizedBox(
                   width: 10,
@@ -194,16 +206,25 @@ class CustomTable extends StatelessWidget {
       children: List.generate(
         totalGroupSize,
         (index) => InkWell(
-          onTap: () {},
+          onTap: () {
+            onTapPageIndex(index);
+          },
           child: Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              border: Border.all(color: MColors.divideColor),
+              border: Border.all(
+                color: index == selectedIndex ? MColors.primaryColor : MColors.divideColor,
+              ),
             ),
             width: 30,
             height: 30,
-            child: Text('${index + 1}'),
+            child: Text(
+              '${index + 1}',
+              style: TextStyle(
+                color: index == selectedIndex ? MColors.primaryColor : MColors.textColor,
+              ),
+            ),
           ),
         ),
       ),
