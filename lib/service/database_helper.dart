@@ -11,6 +11,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+import '../util/log.dart';
+
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._interval();
 
@@ -18,7 +20,7 @@ class DatabaseHelper {
 
   // late
 
-  DatabaseHelper._interval() {}
+  DatabaseHelper._interval();
 
   late Database db;
 
@@ -30,32 +32,33 @@ class DatabaseHelper {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String appDocPath = appDocDir.path;
 
-    print(tempPath);
-    print(appDocPath);
+    log(tempPath);
+    log(appDocPath);
 
     sqfliteFfiInit();
     var databaseFactory = databaseFactoryFfi;
     var path = join(tempPath, "fd_price.db");
-    print(path);
+    log(path);
     var exists = await databaseFactory.databaseExists(path);
     if (!exists) {
       // Should happen only the first time you launch your application
-      print("Creating new copy from asset");
+      log("Creating new copy from asset");
       try {
         await Directory(dirname(path)).create(recursive: true);
       } catch (_) {}
       // Copy from asset
       ByteData data = await rootBundle.load('assets/fd_price.db');
-      print(join('assets', 'fd_price.db'));
+      log(join('assets', 'fd_price.db'));
       // ByteData data = await rootBundle.load(join('assets','express.db'));
-      List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      List<int> bytes =
+          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       // Write and flush the bytes written
       await File(path).writeAsBytes(bytes, flush: true);
     } else {
-      print("Opening existing database");
+      log("Opening existing database");
     }
     // open the database
-    this.db = await databaseFactory.openDatabase(path);
-    print(path);
+    db = await databaseFactory.openDatabase(path);
+    log(path);
   }
 }

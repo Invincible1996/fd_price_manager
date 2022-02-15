@@ -18,12 +18,12 @@ class LabelTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 200,
       child: Row(
         children: [
           Text('$label:'),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
           Expanded(
@@ -31,10 +31,10 @@ class LabelTextField extends StatelessWidget {
               onChanged: onChange,
               decoration: InputDecoration(
                 hintText: placeholderText,
-                hintStyle: TextStyle(fontSize: 14),
-                contentPadding: EdgeInsets.all(10),
+                hintStyle: const TextStyle(fontSize: 14),
+                contentPadding: const EdgeInsets.all(10),
                 isDense: true,
-                border: OutlineInputBorder(
+                border: const OutlineInputBorder(
                   borderSide: BorderSide(
                     color: Colors.teal,
                     width: 1,

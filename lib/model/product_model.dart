@@ -12,7 +12,14 @@ class ProductModel {
   String? createTime;
   String? updateTime;
 
-  ProductModel({this.id, this.name, this.color, this.price, this.description, this.createTime, this.updateTime});
+  ProductModel(
+      {this.id,
+      this.name,
+      this.color,
+      this.price,
+      this.description,
+      this.createTime,
+      this.updateTime});
 
   ProductModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -25,14 +32,14 @@ class ProductModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['color'] = this.color;
-    data['price'] = this.price;
-    data['description'] = this.description;
-    data['create_time'] = this.createTime;
-    data['update_time'] = this.updateTime;
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['name'] = name;
+    data['color'] = color;
+    data['price'] = price;
+    data['description'] = description;
+    data['create_time'] = createTime;
+    data['update_time'] = updateTime;
     return data;
   }
 }

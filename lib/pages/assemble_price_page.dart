@@ -33,6 +33,16 @@ class _AssemblePricePageState extends State<AssemblePricePage> {
       ),
       body: Container(
         color: MColors.bgColor,
+        // child: CustomTable(
+        //   header: header,
+        //   data: data,
+        //   totalCount: totalCount,
+        //   pageSize: pageSize,
+        //   onTapPageIndex: onTapPageIndex,
+        //   onTapPrevious: onTapPrevious,
+        //   onTapNext: onTapNext,
+        //   selectedIndex: selectedIndex,
+        // ),
       ),
     );
   }

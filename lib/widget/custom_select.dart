@@ -28,7 +28,7 @@ class CustomSelect<T> extends StatelessWidget {
     required this.onItemSelected,
     required this.options,
     this.width = 80,
-    this.selectType = SelectType.Custom,
+    this.selectType = SelectType.custom,
     this.onSearch,
   }) : super(key: key);
 
@@ -37,7 +37,7 @@ class CustomSelect<T> extends StatelessWidget {
     return Row(
       children: [
         Text('$title: '),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         Select<T>(
           type: selectType,
           width: width,

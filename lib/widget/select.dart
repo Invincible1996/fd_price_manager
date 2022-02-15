@@ -6,9 +6,11 @@
 import 'package:fd_price_manager/m_colors.dart';
 import 'package:flutter/material.dart';
 
+import '../util/log.dart';
+
 enum SelectType {
-  Search,
-  Custom,
+  search,
+  custom,
 }
 
 class Select<T> extends StatefulWidget {
@@ -44,7 +46,7 @@ class _SelectState extends State<Select> {
     super.initState();
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
-        print('object');
+        log('object');
         _showSelect(context);
       } else {
         // hideOverlay();
@@ -59,7 +61,6 @@ class _SelectState extends State<Select> {
   _showSelect(BuildContext context) {
     RenderBox box = context.findRenderObject() as RenderBox;
     Offset position = box.localToGlobal(Offset.zero); //this is global position
-    double y = position.dy;
     double x = position.dx;
     // print(x);
     // print(y);
@@ -81,14 +82,14 @@ class _SelectState extends State<Select> {
                         color: Colors.white,
                         child: InkWell(
                           focusColor: Colors.white,
-                          hoverColor: Color(0xFFF3F3F3),
+                          hoverColor: const Color(0xFFF3F3F3),
                           onTap: () {
                             overlay?.remove();
                             overlay = null;
                             setState(() {
                               selectValue = '$e';
                             });
-                            if (widget.type == SelectType.Search) {
+                            if (widget.type == SelectType.search) {
                               controller.text = '$e';
                               FocusScope.of(context).unfocus();
                             }
@@ -107,7 +108,7 @@ class _SelectState extends State<Select> {
                   .toList(),
             ),
           ),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             // color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(4)),
             boxShadow: [
@@ -129,7 +130,7 @@ class _SelectState extends State<Select> {
   Widget build(BuildContext context) {
     return InkWell(
       onHover: (value) {
-        print(value);
+        log(value);
       },
       onTap: () {
         if (overlay != null) {
@@ -150,23 +151,23 @@ class _SelectState extends State<Select> {
   ///
   _buildSelect(BuildContext context, SelectType type) {
     switch (type) {
-      case SelectType.Search:
-        return Container(
+      case SelectType.search:
+        return SizedBox(
           width: widget.width,
           child: TextFormField(
             onChanged: (value) {
-              print(value);
+              log(value);
             },
             controller: controller,
             // initialValue: selectValue,
             focusNode: focusNode,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: 'placeholderText',
               hintStyle: TextStyle(fontSize: 14),
               contentPadding: EdgeInsets.all(10),
               isDense: true,
               focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
+                borderSide: BorderSide(
                   color: MColors.primaryColor,
                   width: 1.0,
                 ),
@@ -180,24 +181,24 @@ class _SelectState extends State<Select> {
             ),
           ),
         );
-      case SelectType.Custom:
+      case SelectType.custom:
         return Container(
           width: widget.width,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('$selectValue'),
-              Icon(Icons.arrow_drop_down),
+              Text(selectValue),
+              const Icon(Icons.arrow_drop_down),
             ],
           ),
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             vertical: 2,
             horizontal: 4,
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
-              color: Color(0xFFC4C4C4),
+              color: const Color(0xFFC4C4C4),
               width: 1,
             ),
           ),

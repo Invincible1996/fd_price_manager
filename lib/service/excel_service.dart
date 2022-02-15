@@ -4,6 +4,8 @@ import 'package:excel/excel.dart';
 import 'package:fd_price_manager/service/database_helper.dart';
 import 'package:file_picker/file_picker.dart';
 
+import '../util/log.dart';
+
 ///
 /// @date: 2022/2/14 15:37
 /// @author: kevin
@@ -17,7 +19,7 @@ class ExcelService {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
-      print(result.files.single.path);
+      log(result.files.single.path);
 
       // read excel
 
@@ -27,9 +29,9 @@ class ExcelService {
       var sql = StringBuffer();
 
       for (var table in excel.tables.keys) {
-        print(table); //sheet Name
-        print(excel.tables[table]?.maxCols);
-        print(excel.tables[table]?.maxRows);
+        log(table); //sheet Name
+        log(excel.tables[table]?.maxCols);
+        log(excel.tables[table]?.maxRows);
         // for (var row in excel.tables[table]?.rows ?? []) {
         //   print("$row");
         // }
@@ -39,7 +41,7 @@ class ExcelService {
         for (var i = 0; i < 35; i++) {
           if (i > 0) {
             var item = rows[i];
-            print(item);
+            log(item);
             var lastSeparator = i == 34 ? ";" : ",";
             sql
               ..write("(")
@@ -53,11 +55,12 @@ class ExcelService {
         }
       }
 
-      print(sql);
+      log(sql);
 
       DatabaseHelper().initial().then((res) {
         // DatabaseHelper().db.execute("""INSERT INTO products(name, color, price) VALUES("三位面板带架","雕琢灰",12);""");
-        DatabaseHelper().db.execute('INSERT INTO product(name, color, price,description) VALUES${sql.toString()}');
+        DatabaseHelper().db.execute(
+            'INSERT INTO product(name, color, price,description) VALUES${sql.toString()}');
       });
     } else {
       // User canceled the picker

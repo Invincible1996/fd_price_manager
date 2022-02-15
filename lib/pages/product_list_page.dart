@@ -3,10 +3,11 @@
 /// @author: kevin
 /// @description: dart
 import 'package:fd_price_manager/m_colors.dart';
-import 'package:fd_price_manager/model/product_model.dart';
+import 'package:fd_price_manager/model/table_header_model.dart';
 import 'package:fd_price_manager/service/api_service.dart';
 import 'package:fd_price_manager/service/database_helper.dart';
 import 'package:fd_price_manager/service/excel_service.dart';
+import 'package:fd_price_manager/util/log.dart';
 import 'package:fd_price_manager/widget/custom_select.dart';
 import 'package:fd_price_manager/widget/select.dart';
 import 'package:flutter/material.dart';
@@ -20,10 +21,11 @@ class ProductListPage extends StatefulWidget {
   _ProductListPageState createState() => _ProductListPageState();
 }
 
-class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAliveClientMixin {
-  List<ProductModel> _products = [];
+class _ProductListPageState extends State<ProductListPage>
+    with AutomaticKeepAliveClientMixin {
+  List<Map> _products = [];
   int _totalCount = 0;
-  int _pageSize = 20;
+  final int _pageSize = 20;
   int _offset = 0;
 
   @override
@@ -31,8 +33,8 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
     super.initState();
     DatabaseHelper().initial().then((res) async {
       var count = await ApiService.getCount();
-      print(count);
-      var products = await ApiService.queryProducts(pageSize: _pageSize, offset: _offset);
+      var products =
+          await ApiService.queryProducts(pageSize: _pageSize, offset: _offset);
 
       setState(() {
         _products = products;
@@ -46,6 +48,7 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
@@ -62,7 +65,7 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
           children: [
             Container(
               height: 120,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               // margin: const EdgeInsets.symmetric(
               //   horizontal: 16,
               //   vertical: 10,
@@ -95,26 +98,24 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
                       CustomSelect<String>(
                         title: '颜色',
                         onItemSelected: (String value) {},
-                        options: ['红色', '绿色', '蓝色', '黄色', '紫色'],
+                        options: const ['红色', '绿色', '蓝色', '黄色', '紫色'],
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       CustomSelect<int>(
                         width: 120,
-                        selectType: SelectType.Search,
-                        onSearch: (String text) async {
-                          print(text);
-                        },
-                        options: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                        selectType: SelectType.search,
+                        onSearch: (String text) async {},
+                        options: const [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                         title: '规格',
                         onItemSelected: (String value) {},
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       ElevatedButton.icon(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(50, 40),
                         ),
-                        icon: Icon(Icons.search_rounded),
+                        icon: const Icon(Icons.search_rounded),
                         label: const Text('搜索'),
                       ),
                     ],
@@ -128,10 +129,10 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(120, 45),
                         ),
-                        icon: Icon(Icons.cloud_upload),
+                        icon: const Icon(Icons.cloud_upload),
                         label: const Text('导入商品数据'),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       ElevatedButton.icon(
@@ -140,7 +141,7 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
                           primary: Colors.red,
                           minimumSize: const Size(120, 45),
                         ),
-                        icon: Icon(Icons.dangerous),
+                        icon: const Icon(Icons.dangerous),
                         label: const Text('清空商品数据'),
                       ),
                     ],
@@ -148,57 +149,59 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Expanded(
-              child: Container(
-                // padding: EdgeInsets.symmetric(horizontal: 16),
-                child: CustomTable(
-                  selectedIndex: _offset,
-                  header: ['商品名称', '单价', '规格', '操作'],
-                  data: _products,
-                  totalCount: _totalCount,
-                  pageSize: _pageSize,
-                  onTapNext: () async {
-                    var totalGroupSize = (_totalCount / _pageSize).ceilToDouble().toInt();
-                    if (_offset == totalGroupSize - 1) {
-                      return;
-                    }
-                    var products = await ApiService.queryProducts(
-                      offset: _offset + 1,
-                      pageSize: _pageSize,
-                    );
-                    setState(() {
-                      _offset += 1;
-                      _products = products;
-                    });
-                  },
-                  onTapPrevious: () async {
-                    if (_offset == 0) {
-                      return;
-                    }
-                    var products = await ApiService.queryProducts(
-                      offset: _offset - 1,
-                      pageSize: _pageSize,
-                    );
-                    setState(() {
-                      _offset -= 1;
-                      _products = products;
-                    });
-                  },
-                  onTapPageIndex: (index) async {
-                    print(int);
-                    var products = await ApiService.queryProducts(
-                      offset: index,
-                      pageSize: _pageSize,
-                    );
-                    setState(() {
-                      _offset = index;
-                      _products = products;
-                    });
-                  },
-                ),
+              child: CustomTable(
+                selectedIndex: _offset,
+                header: [
+                  TableHeaderModel(title: '商品名称', dataIndex: 'name'),
+                  TableHeaderModel(title: '单价', dataIndex: 'price'),
+                  TableHeaderModel(title: '规格', dataIndex: 'color'),
+                ],
+                data: _products,
+                totalCount: _totalCount,
+                pageSize: _pageSize,
+                onTapNext: () async {
+                  var totalGroupSize =
+                      (_totalCount / _pageSize).ceilToDouble().toInt();
+                  if (_offset == totalGroupSize - 1) {
+                    return;
+                  }
+                  var products = await ApiService.queryProducts(
+                    offset: _offset + 1,
+                    pageSize: _pageSize,
+                  );
+                  setState(() {
+                    _offset += 1;
+                    _products = products;
+                  });
+                },
+                onTapPrevious: () async {
+                  if (_offset == 0) {
+                    return;
+                  }
+                  var products = await ApiService.queryProducts(
+                    offset: _offset - 1,
+                    pageSize: _pageSize,
+                  );
+                  setState(() {
+                    _offset -= 1;
+                    _products = products;
+                  });
+                },
+                onTapPageIndex: (index) async {
+                  log(index);
+                  var products = await ApiService.queryProducts(
+                    offset: index,
+                    pageSize: _pageSize,
+                  );
+                  setState(() {
+                    _offset = index;
+                    _products = products;
+                  });
+                },
               ),
             )
           ],
