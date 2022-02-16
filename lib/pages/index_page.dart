@@ -3,11 +3,12 @@
 /// @author: kevin
 /// @description: dart
 ///
-import 'package:fd_price_manager/m_colors.dart';
-import 'package:fd_price_manager/pages/assemble_price_page.dart';
-import 'package:fd_price_manager/pages/product_list_page.dart';
-import 'package:fd_price_manager/service/database_helper.dart';
 import 'package:flutter/material.dart';
+
+import '../m_colors.dart';
+import '../service/database_helper.dart';
+import 'assemble_price_page.dart';
+import 'product_list_page.dart';
 
 class IndexPage extends StatefulWidget {
   const IndexPage({Key? key}) : super(key: key);
@@ -67,8 +68,7 @@ class _IndexPageState extends State<IndexPage> {
                     ),
                     child: const Text(
                       'FD Price Manager',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                   ),
                   GestureDetector(
@@ -81,26 +81,19 @@ class _IndexPageState extends State<IndexPage> {
                     child: Container(
                       height: 45,
                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                      color: _selectIndex == 0
-                          ? MColors.primaryColor
-                          : Colors.transparent,
+                      color: _selectIndex == 0 ? MColors.primaryColor : Colors.transparent,
                       child: Row(
                         children: [
                           Icon(
                             Icons.list_alt_sharp,
-                            color: _selectIndex == 0
-                                ? Colors.white
-                                : MColors.textColor,
+                            color: _selectIndex == 0 ? Colors.white : MColors.textColor,
                           ),
                           const SizedBox(
                             width: 10,
                           ),
                           Text(
                             '商品价格明细表',
-                            style: TextStyle(
-                                color: _selectIndex == 0
-                                    ? Colors.white
-                                    : MColors.textColor),
+                            style: TextStyle(color: _selectIndex == 0 ? Colors.white : MColors.textColor),
                           ),
                         ],
                       ),
@@ -116,26 +109,19 @@ class _IndexPageState extends State<IndexPage> {
                     child: Container(
                       height: 45,
                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                      color: _selectIndex == 1
-                          ? MColors.primaryColor
-                          : Colors.transparent,
+                      color: _selectIndex == 1 ? MColors.primaryColor : Colors.transparent,
                       child: Row(
                         children: [
                           Icon(
                             Icons.list_alt_sharp,
-                            color: _selectIndex == 1
-                                ? Colors.white
-                                : MColors.textColor,
+                            color: _selectIndex == 1 ? Colors.white : MColors.textColor,
                           ),
                           const SizedBox(
                             width: 10,
                           ),
                           Text(
                             '商品价格明细表',
-                            style: TextStyle(
-                                color: _selectIndex == 1
-                                    ? Colors.white
-                                    : MColors.textColor),
+                            style: TextStyle(color: _selectIndex == 1 ? Colors.white : MColors.textColor),
                           ),
                         ],
                       ),

@@ -3,8 +3,9 @@
 /// @author: kevin
 /// @description: dart
 ///
-import 'package:fd_price_manager/widget/select.dart';
 import 'package:flutter/material.dart';
+
+import 'select.dart';
 
 class CustomSelect<T> extends StatelessWidget {
   // 标题

@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:excel/excel.dart';
-import 'package:fd_price_manager/service/database_helper.dart';
 import 'package:file_picker/file_picker.dart';
 
 import '../util/log.dart';
+import 'database_helper.dart';
 
 ///
 /// @date: 2022/2/14 15:37
@@ -59,8 +59,7 @@ class ExcelService {
 
       DatabaseHelper().initial().then((res) {
         // DatabaseHelper().db.execute("""INSERT INTO products(name, color, price) VALUES("三位面板带架","雕琢灰",12);""");
-        DatabaseHelper().db.execute(
-            'INSERT INTO product(name, color, price,description) VALUES${sql.toString()}');
+        DatabaseHelper().db.execute('INSERT INTO product(name, color, price,description) VALUES${sql.toString()}');
       });
     } else {
       // User canceled the picker

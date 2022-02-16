@@ -2,9 +2,10 @@
 /// @date: 2022/2/14 14:39
 /// @author: kevin
 /// @description: dart
-import 'package:fd_price_manager/m_colors.dart';
-import 'package:fd_price_manager/model/table_columns_model.dart';
 import 'package:flutter/material.dart';
+
+import '../m_colors.dart';
+import '../model/table_columns_model.dart';
 
 class CustomTable extends StatelessWidget {
   final List<TableColumnsModel> columns;

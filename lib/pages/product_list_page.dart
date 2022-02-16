@@ -2,17 +2,17 @@
 /// @date: 2022/2/14 13:42
 /// @author: kevin
 /// @description: dart
-import 'package:fd_price_manager/m_colors.dart';
-import 'package:fd_price_manager/model/table_columns_model.dart';
-import 'package:fd_price_manager/service/api_service.dart';
-import 'package:fd_price_manager/service/database_helper.dart';
-import 'package:fd_price_manager/service/excel_service.dart';
-import 'package:fd_price_manager/util/log.dart';
-import 'package:fd_price_manager/widget/custom_select.dart';
-import 'package:fd_price_manager/widget/select.dart';
 import 'package:flutter/material.dart';
 
+import '../m_colors.dart';
+import '../model/table_columns_model.dart';
+import '../service/api_service.dart';
+import '../service/database_helper.dart';
+import '../service/excel_service.dart';
+import '../util/log.dart';
+import '../widget/custom_select.dart';
 import '../widget/custom_table.dart';
+import '../widget/select.dart';
 
 class ProductListPage extends StatefulWidget {
   const ProductListPage({Key? key}) : super(key: key);

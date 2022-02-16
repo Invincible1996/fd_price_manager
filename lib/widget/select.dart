@@ -3,9 +3,9 @@
 /// @author: kevin
 /// @description: dart
 ///
-import 'package:fd_price_manager/m_colors.dart';
 import 'package:flutter/material.dart';
 
+import '../m_colors.dart';
 import '../util/log.dart';
 
 enum SelectType {
