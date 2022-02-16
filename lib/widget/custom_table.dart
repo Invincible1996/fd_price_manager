@@ -3,11 +3,11 @@
 /// @author: kevin
 /// @description: dart
 import 'package:fd_price_manager/m_colors.dart';
-import 'package:fd_price_manager/model/table_header_model.dart';
+import 'package:fd_price_manager/model/table_columns_model.dart';
 import 'package:flutter/material.dart';
 
 class CustomTable extends StatelessWidget {
-  final List<TableHeaderModel> header;
+  final List<TableColumnsModel> columns;
   final List<Map> data;
   final int totalCount;
   final int pageSize;
@@ -18,7 +18,7 @@ class CustomTable extends StatelessWidget {
 
   const CustomTable({
     Key? key,
-    required this.header,
+    required this.columns,
     required this.data,
     required this.totalCount,
     required this.pageSize,
@@ -44,7 +44,7 @@ class CustomTable extends StatelessWidget {
                   ),
                 ),
               ),
-              children: header
+              children: columns
                   .map(
                     (e) => Container(
                       height: 40,
@@ -67,59 +67,27 @@ class CustomTable extends StatelessWidget {
               children: data
                   .map(
                     (item) => TableRow(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border(
-                            bottom: BorderSide(
-                              width: 1,
-                              color: MColors.divideColor,
-                            ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          bottom: BorderSide(
+                            width: 1,
+                            color: MColors.divideColor,
                           ),
                         ),
-                        children: header
-                            .map(
-                              (e) => Container(
-                                alignment: Alignment.center,
-                                height: 40,
-                                child: Text('${item[e.dataIndex]}'),
-                              ),
-                            )
-                            .toList()
-                        // children: [
-                        //   Container(
-                        //     alignment: Alignment.center,
-                        //     height: 40,
-                        //     child: Text('${e}'),
-                        //   ),
-                        //   Container(
-                        //     alignment: Alignment.center,
-                        //     height: 40,
-                        //     child: Text('${e?.color}'),
-                        //   ),
-                        //   Container(
-                        //     alignment: Alignment.center,
-                        //     height: 40,
-                        //     child: Text('${e.price}'),
-                        //   ),
-                        //   Container(
-                        //     alignment: Alignment.center,
-                        //     height: 40,
-                        //     child: Row(
-                        //       mainAxisAlignment: MainAxisAlignment.center,
-                        //       children: [
-                        //         TextButton(
-                        //           onPressed: () {},
-                        //           child: Text('编辑'),
-                        //         ),
-                        //         TextButton(
-                        //           onPressed: () {},
-                        //           child: Text('删除'),
-                        //         ),
-                        //       ],
-                        //     ),
-                        //   ),
-                        // ],
-                        ),
+                      ),
+                      children: columns
+                          .map(
+                            (e) => Container(
+                              alignment: Alignment.center,
+                              height: 40,
+                              // child: Text('${item[e.dataIndex]}'),
+                              // child:e.builder
+                              child: (e.builder?.call(item)) ?? Text('${item[e.dataIndex]}'),
+                            ),
+                          )
+                          .toList(),
+                    ),
                   )
                   .toList(),
             ),
@@ -149,8 +117,7 @@ class CustomTable extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5),
                     border: Border.all(color: MColors.divideColor),
                   ),
-                  child:
-                      const Icon(Icons.keyboard_arrow_left_rounded, size: 22),
+                  child: const Icon(Icons.keyboard_arrow_left_rounded, size: 22),
                 ),
                 onTap: () {
                   onTapPrevious();
@@ -172,8 +139,7 @@ class CustomTable extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5),
                     border: Border.all(color: MColors.divideColor),
                   ),
-                  child:
-                      const Icon(Icons.keyboard_arrow_right_rounded, size: 22),
+                  child: const Icon(Icons.keyboard_arrow_right_rounded, size: 22),
                 ),
                 onTap: () {
                   onTapNext();
@@ -224,9 +190,7 @@ class CustomTable extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               border: Border.all(
-                color: index == selectedIndex
-                    ? MColors.primaryColor
-                    : MColors.divideColor,
+                color: index == selectedIndex ? MColors.primaryColor : MColors.divideColor,
               ),
             ),
             width: 30,
@@ -234,9 +198,7 @@ class CustomTable extends StatelessWidget {
             child: Text(
               '${index + 1}',
               style: TextStyle(
-                color: index == selectedIndex
-                    ? MColors.primaryColor
-                    : MColors.textColor,
+                color: index == selectedIndex ? MColors.primaryColor : MColors.textColor,
               ),
             ),
           ),

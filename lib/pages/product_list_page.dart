@@ -3,7 +3,7 @@
 /// @author: kevin
 /// @description: dart
 import 'package:fd_price_manager/m_colors.dart';
-import 'package:fd_price_manager/model/table_header_model.dart';
+import 'package:fd_price_manager/model/table_columns_model.dart';
 import 'package:fd_price_manager/service/api_service.dart';
 import 'package:fd_price_manager/service/database_helper.dart';
 import 'package:fd_price_manager/service/excel_service.dart';
@@ -21,20 +21,47 @@ class ProductListPage extends StatefulWidget {
   _ProductListPageState createState() => _ProductListPageState();
 }
 
-class _ProductListPageState extends State<ProductListPage>
-    with AutomaticKeepAliveClientMixin {
+class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAliveClientMixin {
   List<Map> _products = [];
   int _totalCount = 0;
   final int _pageSize = 20;
   int _offset = 0;
+
+  final List<TableColumnsModel> columns = [
+    TableColumnsModel(
+      title: '商品名称',
+      dataIndex: 'name',
+    ),
+    TableColumnsModel(
+      title: '单价',
+      dataIndex: 'price',
+    ),
+    TableColumnsModel(
+      title: '规格',
+      dataIndex: 'color',
+    ),
+    TableColumnsModel(
+      title: '规格',
+      dataIndex: 'color',
+      builder: (item) {
+        log(item);
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(onPressed: () {}, child: Text('编辑')),
+            TextButton(onPressed: () {}, child: Text('删除')),
+          ],
+        );
+      },
+    ),
+  ];
 
   @override
   initState() {
     super.initState();
     DatabaseHelper().initial().then((res) async {
       var count = await ApiService.getCount();
-      var products =
-          await ApiService.queryProducts(pageSize: _pageSize, offset: _offset);
+      var products = await ApiService.queryProducts(pageSize: _pageSize, offset: _offset);
 
       setState(() {
         _products = products;
@@ -155,17 +182,12 @@ class _ProductListPageState extends State<ProductListPage>
             Expanded(
               child: CustomTable(
                 selectedIndex: _offset,
-                header: [
-                  TableHeaderModel(title: '商品名称', dataIndex: 'name'),
-                  TableHeaderModel(title: '单价', dataIndex: 'price'),
-                  TableHeaderModel(title: '规格', dataIndex: 'color'),
-                ],
+                columns: columns,
                 data: _products,
                 totalCount: _totalCount,
                 pageSize: _pageSize,
                 onTapNext: () async {
-                  var totalGroupSize =
-                      (_totalCount / _pageSize).ceilToDouble().toInt();
+                  var totalGroupSize = (_totalCount / _pageSize).ceilToDouble().toInt();
                   if (_offset == totalGroupSize - 1) {
                     return;
                   }
