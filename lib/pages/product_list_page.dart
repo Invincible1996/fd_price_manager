@@ -3,16 +3,16 @@
 /// @author: kevin
 /// @description: dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../m_colors.dart';
 import '../model/table_columns_model.dart';
-import '../service/api_service.dart';
 import '../service/database_helper.dart';
 import '../service/excel_service.dart';
 import '../util/log.dart';
+import '../view_model/product_list_model.dart';
 import '../widget/custom_select.dart';
 import '../widget/custom_table.dart';
-import '../widget/select.dart';
 
 class ProductListPage extends StatefulWidget {
   const ProductListPage({Key? key}) : super(key: key);
@@ -22,11 +22,6 @@ class ProductListPage extends StatefulWidget {
 }
 
 class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAliveClientMixin {
-  List<Map> _products = [];
-  int _totalCount = 0;
-  final int _pageSize = 20;
-  int _offset = 0;
-
   final List<TableColumnsModel> columns = [
     TableColumnsModel(
       title: '商品名称',
@@ -60,16 +55,7 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
   initState() {
     super.initState();
     DatabaseHelper().initial().then((res) async {
-      var count = await ApiService.getCount();
-      var products = await ApiService.queryProducts(pageSize: _pageSize, offset: _offset);
-
-      setState(() {
-        _products = products;
-        _totalCount = count;
-      });
-
-      ApiService.queryColors();
-      ApiService.queryProductNames();
+      Provider.of<ProductListModel>(context, listen: false).init();
     });
   }
 
@@ -86,149 +72,135 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
         ),
         centerTitle: false,
       ),
-      body: Container(
-        color: MColors.bgColor,
-        child: Column(
-          children: [
-            Container(
-              height: 120,
-              padding: const EdgeInsets.all(10),
-              // margin: const EdgeInsets.symmetric(
-              //   horizontal: 16,
-              //   vertical: 10,
-              // ),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      // LabelTextField(
-                      //   onChange: (String text) {},
-                      //   placeholderText: '请输入商品名称',
-                      //   label: '名称',
-                      // ),
-                      // SizedBox(
-                      //   width: 20,
-                      // ),
-                      // LabelTextField(
-                      //   onChange: (String text) {},
-                      //   placeholderText: '请输入商品规格',
-                      //   label: '规格',
-                      // ),
-                      // SizedBox(
-                      //   width: 10,
-                      // ),
-
-                      CustomSelect<String>(
-                        title: '颜色',
-                        onItemSelected: (String value) {},
-                        options: const ['红色', '绿色', '蓝色', '黄色', '紫色'],
-                      ),
-                      const SizedBox(width: 20),
-                      CustomSelect<int>(
-                        width: 120,
-                        selectType: SelectType.search,
-                        onSearch: (String text) async {},
-                        options: const [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-                        title: '规格',
-                        onItemSelected: (String value) {},
-                      ),
-                      const SizedBox(width: 20),
-                      ElevatedButton.icon(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(50, 40),
+      body: Consumer<ProductListModel>(builder: (contex, model, _) {
+        print(model.products);
+        return Container(
+          color: MColors.bgColor,
+          child: Column(
+            children: [
+              Container(
+                height: 120,
+                padding: const EdgeInsets.all(10),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        CustomSelect<String>(
+                          defaultValue: '全部',
+                          title: '颜色',
+                          onItemSelected: (String value) async {
+                            model.selectedColor = value;
+                            await model.queryProducts(
+                              offset: 0,
+                              color: model.selectedColor,
+                              name: model.selectedProductName,
+                            );
+                          },
+                          options: model.colors,
                         ),
-                        icon: const Icon(Icons.search_rounded),
-                        label: const Text('搜索'),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          ExcelService.import();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(120, 45),
+                        const SizedBox(width: 20),
+                        CustomSelect<String>(
+                          defaultValue: '全部',
+                          width: 150,
+                          // selectType: SelectType.search,
+                          onSearch: (String text) async {},
+                          options: model.productNames,
+                          title: '名称',
+                          onItemSelected: (String value) async {
+                            model.selectedProductName = value;
+                            await model.queryProducts(
+                              offset: 0,
+                              color: model.selectedColor,
+                              name: model.selectedProductName,
+                            );
+                          },
                         ),
-                        icon: const Icon(Icons.cloud_upload),
-                        label: const Text('导入商品数据'),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      ElevatedButton.icon(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
-                          minimumSize: const Size(120, 45),
+                        const SizedBox(width: 20),
+                        ElevatedButton.icon(
+                          onPressed: () async {},
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(50, 40),
+                          ),
+                          icon: const Icon(Icons.search_rounded),
+                          label: const Text('搜索'),
                         ),
-                        icon: const Icon(Icons.dangerous),
-                        label: const Text('清空商品数据'),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            ExcelService.import();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(120, 45),
+                          ),
+                          icon: const Icon(Icons.cloud_upload),
+                          label: const Text('导入商品数据'),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.red,
+                            minimumSize: const Size(120, 45),
+                          ),
+                          icon: const Icon(Icons.dangerous),
+                          label: const Text('清空商品数据'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Expanded(
-              child: CustomTable(
-                selectedIndex: _offset,
-                columns: columns,
-                data: _products,
-                totalCount: _totalCount,
-                pageSize: _pageSize,
-                onTapNext: () async {
-                  var totalGroupSize = (_totalCount / _pageSize).ceilToDouble().toInt();
-                  if (_offset == totalGroupSize - 1) {
-                    return;
-                  }
-                  var products = await ApiService.queryProducts(
-                    offset: _offset + 1,
-                    pageSize: _pageSize,
-                  );
-                  setState(() {
-                    _offset += 1;
-                    _products = products;
-                  });
-                },
-                onTapPrevious: () async {
-                  if (_offset == 0) {
-                    return;
-                  }
-                  var products = await ApiService.queryProducts(
-                    offset: _offset - 1,
-                    pageSize: _pageSize,
-                  );
-                  setState(() {
-                    _offset -= 1;
-                    _products = products;
-                  });
-                },
-                onTapPageIndex: (index) async {
-                  log(index);
-                  var products = await ApiService.queryProducts(
-                    offset: index,
-                    pageSize: _pageSize,
-                  );
-                  setState(() {
-                    _offset = index;
-                    _products = products;
-                  });
-                },
+              const SizedBox(
+                height: 10,
               ),
-            )
-          ],
-        ),
-      ),
+              Expanded(
+                child: CustomTable(
+                  selectedIndex: model.offset,
+                  columns: columns,
+                  data: model.products,
+                  totalCount: model.totalCount,
+                  pageSize: model.pageSize,
+                  onTapNext: () async {
+                    var totalGroupSize = (model.totalCount / model.pageSize).ceilToDouble().toInt();
+                    if (model.offset == totalGroupSize - 1) {
+                      return;
+                    }
+                    model.offset++;
+                    model.queryProducts(
+                      offset: model.offset,
+                    );
+                  },
+                  onTapPrevious: () async {
+                    if (model == 0) {
+                      return;
+                    }
+                    model.offset--;
+                    model.queryProducts(
+                      offset: model.offset,
+                    );
+                  },
+                  onTapPageIndex: (index) async {
+                    log(index);
+                    model.offset = index;
+                    model.queryProducts(
+                      offset: model.offset,
+                    );
+                  },
+                ),
+              )
+            ],
+          ),
+        );
+      }),
     );
   }
 
