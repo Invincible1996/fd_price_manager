@@ -1,5 +1,3 @@
-import 'package:fd_price_manager/util/log.dart';
-
 ///
 /// @date: 2022/2/17 17:44
 /// @author: kevin
@@ -13,7 +11,6 @@ extension ListExtension on List {
   /// @return:
   ///
   transformToSQL() {
-    log("=====transformToSQL=====");
     var list = map((item) => '\'$item\'').toList();
     return list.toString().replaceAll("[", "(").replaceAll("]", ")");
   }

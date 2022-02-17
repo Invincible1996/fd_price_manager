@@ -16,6 +16,7 @@ class CustomTable extends StatelessWidget {
   final Function(int) onTapPageIndex;
   final Function() onTapPrevious;
   final Function() onTapNext;
+  final bool isShowPagination;
 
   const CustomTable({
     Key? key,
@@ -27,6 +28,7 @@ class CustomTable extends StatelessWidget {
     required this.onTapPrevious,
     required this.onTapNext,
     required this.selectedIndex,
+    this.isShowPagination = true,
   }) : super(key: key);
 
   @override
@@ -34,6 +36,9 @@ class CustomTable extends StatelessWidget {
     return Column(
       children: [
         Table(
+          columnWidths: const <int, TableColumnWidth>{
+            0: FixedColumnWidth(50),
+          },
           children: [
             TableRow(
               decoration: BoxDecoration(
@@ -65,6 +70,9 @@ class CustomTable extends StatelessWidget {
         Expanded(
           child: SingleChildScrollView(
             child: Table(
+              columnWidths: const <int, TableColumnWidth>{
+                0: FixedColumnWidth(50),
+              },
               children: data
                   .map(
                     (item) => TableRow(
@@ -94,88 +102,94 @@ class CustomTable extends StatelessWidget {
             ),
           ),
         ),
-        Container(
-          height: 45,
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border(
-              top: BorderSide(
-                width: 1,
-                color: MColors.divideColor,
-              ),
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              InkWell(
-                borderRadius: BorderRadius.circular(5),
-                child: Container(
-                  width: 30,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(color: MColors.divideColor),
+        isShowPagination
+            ? Container(
+                height: 45,
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border(
+                    top: BorderSide(
+                      width: 1,
+                      color: MColors.divideColor,
+                    ),
                   ),
-                  child: const Icon(Icons.keyboard_arrow_left_rounded, size: 22),
                 ),
-                onTap: () {
-                  onTapPrevious();
-                },
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              _buildPageIndex(),
-              const SizedBox(
-                width: 10,
-              ),
-              InkWell(
-                borderRadius: BorderRadius.circular(5),
-                child: Container(
-                  width: 30,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(color: MColors.divideColor),
-                  ),
-                  child: const Icon(Icons.keyboard_arrow_right_rounded, size: 22),
-                ),
-                onTap: () {
-                  onTapNext();
-                },
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  // width: 100
-                  padding: const EdgeInsets.all(4),
-                  height: 30,
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                    width: 1,
-                    color: MColors.divideColor,
-                    // color: MColors.primaryColor,
-                  )),
-                  child: Row(
-                    children: const [
-                      Text('10条/页'),
-                      Icon(Icons.arrow_drop_down),
-                    ],
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                      borderRadius: BorderRadius.circular(5),
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(color: MColors.divideColor),
+                        ),
+                        child: const Icon(Icons.keyboard_arrow_left_rounded, size: 22),
+                      ),
+                      onTap: () {
+                        onTapPrevious();
+                      },
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    _buildPageIndex(),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(5),
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(color: MColors.divideColor),
+                        ),
+                        child: const Icon(Icons.keyboard_arrow_right_rounded, size: 22),
+                      ),
+                      onTap: () {
+                        onTapNext();
+                      },
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    InkWell(
+                      onTap: () {},
+                      child: Container(
+                        // width: 100
+                        padding: const EdgeInsets.all(4),
+                        height: 30,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                          width: 1,
+                          color: MColors.divideColor,
+                          // color: MColors.primaryColor,
+                        )),
+                        child: Row(
+                          children: const [
+                            Text('10条/页'),
+                            Icon(Icons.arrow_drop_down),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               )
-            ],
-          ),
-        )
+            : const SizedBox.shrink()
       ],
     );
   }
 
+  ///
+  ///
+  ///
+  ///
   _buildPageIndex() {
     var totalGroupSize = (totalCount / pageSize).ceilToDouble().toInt();
     return Wrap(
