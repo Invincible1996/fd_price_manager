@@ -27,9 +27,16 @@ class ProductListModel with ChangeNotifier {
   String? selectedProductName = '全部';
 
   init() async {
+    await queryCount(color: selectedColor, name: selectedProductName);
     await queryProducts(offset: 0, color: selectedColor, name: selectedProductName);
     await queryColors();
     await queryProductNames();
+  }
+
+  queryCount({String? name, String? color}) async {
+    var count = await ApiService.queryCount(name: selectedProductName, color: selectedColor);
+    totalCount = count;
+    notifyListeners();
   }
 
   ///
@@ -72,10 +79,10 @@ class ProductListModel with ChangeNotifier {
   ///
   queryProducts({required int offset, String? color, String? name}) async {
     try {
+      await queryCount(name: selectedProductName, color: selectedColor);
       final res = await ApiService.queryProducts(pageSize: pageSize, offset: offset, color: color, name: name);
       _products.clear();
       _products.addAll(res);
-      totalCount = res.length;
       notifyListeners();
     } catch (e) {
       print(e);

@@ -12,8 +12,15 @@ class ApiService {
   ///
   /// @desc
   ///
-  static Future<int> getCount() async {
-    List list = await DatabaseHelper().db.rawQuery('SELECT COUNT(*) FROM product');
+  static Future<int> queryCount({String? color, String? name}) async {
+    String colorCondition = color == '全部' ? 'color in${(await queryColors()).transformToSQL()}' : 'color = \'$color\'';
+
+    String nameCondition = name == '全部' ? 'name in${(await queryProductNames()).transformToSQL()}' : 'name = \'$name\'';
+
+    List list = await DatabaseHelper().db.rawQuery(
+          '''SELECT COUNT(*) FROM product'''
+          ''' WHERE $colorCondition AND $nameCondition''',
+        );
 
     log(list);
 

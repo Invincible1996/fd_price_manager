@@ -24,6 +24,10 @@ class ProductListPage extends StatefulWidget {
 class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAliveClientMixin {
   final List<TableColumnsModel> columns = [
     TableColumnsModel(
+      title: '#',
+      dataIndex: 'id',
+    ),
+    TableColumnsModel(
       title: '商品名称',
       dataIndex: 'name',
     ),
@@ -177,6 +181,8 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
                     model.offset++;
                     model.queryProducts(
                       offset: model.offset,
+                      color: model.selectedColor,
+                      name: model.selectedProductName,
                     );
                   },
                   onTapPrevious: () async {
@@ -186,6 +192,8 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
                     model.offset--;
                     model.queryProducts(
                       offset: model.offset,
+                      color: model.selectedColor,
+                      name: model.selectedProductName,
                     );
                   },
                   onTapPageIndex: (index) async {
@@ -193,6 +201,8 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
                     model.offset = index;
                     model.queryProducts(
                       offset: model.offset,
+                      color: model.selectedColor,
+                      name: model.selectedProductName,
                     );
                   },
                 ),
