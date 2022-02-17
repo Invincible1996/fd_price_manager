@@ -21,7 +21,8 @@ class ProductListPage extends StatefulWidget {
   _ProductListPageState createState() => _ProductListPageState();
 }
 
-class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAliveClientMixin {
+class _ProductListPageState extends State<ProductListPage>
+    with AutomaticKeepAliveClientMixin {
   final List<TableColumnsModel> columns = [
     TableColumnsModel(
       title: '#',
@@ -40,7 +41,7 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
       dataIndex: 'color',
     ),
     TableColumnsModel(
-      title: '规格',
+      title: '操作',
       dataIndex: 'color',
       builder: (item) {
         log(item);
@@ -174,7 +175,9 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
                   totalCount: model.totalCount,
                   pageSize: model.pageSize,
                   onTapNext: () async {
-                    var totalGroupSize = (model.totalCount / model.pageSize).ceilToDouble().toInt();
+                    var totalGroupSize = (model.totalCount / model.pageSize)
+                        .ceilToDouble()
+                        .toInt();
                     if (model.offset == totalGroupSize - 1) {
                       return;
                     }

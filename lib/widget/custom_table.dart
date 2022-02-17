@@ -68,38 +68,41 @@ class CustomTable extends StatelessWidget {
           ],
         ),
         Expanded(
-          child: SingleChildScrollView(
-            child: Table(
-              columnWidths: const <int, TableColumnWidth>{
-                0: FixedColumnWidth(50),
-              },
-              children: data
-                  .map(
-                    (item) => TableRow(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          bottom: BorderSide(
-                            width: 1,
-                            color: MColors.divideColor,
+          child: ListView(
+            children: [
+              Table(
+                columnWidths: const <int, TableColumnWidth>{
+                  0: FixedColumnWidth(50),
+                },
+                children: data
+                    .map(
+                      (item) => TableRow(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border(
+                            bottom: BorderSide(
+                              width: 1,
+                              color: MColors.divideColor,
+                            ),
                           ),
                         ),
+                        children: columns
+                            .map(
+                              (e) => Container(
+                                alignment: Alignment.center,
+                                height: 40,
+                                // child: Text('${item[e.dataIndex]}'),
+                                // child:e.builder
+                                child: (e.builder?.call(item)) ??
+                                    Text('${item[e.dataIndex]}'),
+                              ),
+                            )
+                            .toList(),
                       ),
-                      children: columns
-                          .map(
-                            (e) => Container(
-                              alignment: Alignment.center,
-                              height: 40,
-                              // child: Text('${item[e.dataIndex]}'),
-                              // child:e.builder
-                              child: (e.builder?.call(item)) ?? Text('${item[e.dataIndex]}'),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  )
-                  .toList(),
-            ),
+                    )
+                    .toList(),
+              ),
+            ],
           ),
         ),
         isShowPagination
@@ -127,7 +130,8 @@ class CustomTable extends StatelessWidget {
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(color: MColors.divideColor),
                         ),
-                        child: const Icon(Icons.keyboard_arrow_left_rounded, size: 22),
+                        child: const Icon(Icons.keyboard_arrow_left_rounded,
+                            size: 22),
                       ),
                       onTap: () {
                         onTapPrevious();
@@ -149,7 +153,8 @@ class CustomTable extends StatelessWidget {
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(color: MColors.divideColor),
                         ),
-                        child: const Icon(Icons.keyboard_arrow_right_rounded, size: 22),
+                        child: const Icon(Icons.keyboard_arrow_right_rounded,
+                            size: 22),
                       ),
                       onTap: () {
                         onTapNext();
@@ -205,7 +210,9 @@ class CustomTable extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               border: Border.all(
-                color: index == selectedIndex ? MColors.primaryColor : MColors.divideColor,
+                color: index == selectedIndex
+                    ? MColors.primaryColor
+                    : MColors.divideColor,
               ),
             ),
             width: 30,
@@ -213,7 +220,9 @@ class CustomTable extends StatelessWidget {
             child: Text(
               '${index + 1}',
               style: TextStyle(
-                color: index == selectedIndex ? MColors.primaryColor : MColors.textColor,
+                color: index == selectedIndex
+                    ? MColors.primaryColor
+                    : MColors.textColor,
               ),
             ),
           ),

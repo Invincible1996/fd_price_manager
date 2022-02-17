@@ -78,7 +78,7 @@ class _SelectState extends State<Select> {
         left: x,
         child: Container(
           width: size.width,
-          height: 100,
+          height: 160,
           child: SingleChildScrollView(
             child: Column(
               children: widget.options
