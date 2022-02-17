@@ -3,6 +3,7 @@
 /// @author: kevin
 /// @description: dart
 ///
+import '../util/list_extension.dart';
 import '../util/log.dart';
 import 'database_helper.dart';
 
@@ -23,9 +24,27 @@ class ApiService {
   /// @des 查询所有商品
   ///
   ///
-  static Future<List<Map>> queryProducts({int pageSize = 0, int offset = 0}) async {
-    // List list = await DatabaseHelper().db.rawQuery('SELECT color FROM product GROUP BY color');
-    List<Map> list = await DatabaseHelper().db.rawQuery('SELECT * FROM product limit $pageSize offset(${offset * pageSize})');
+  static Future<List<Map>> queryProducts({
+    int pageSize = 0,
+    int offset = 0,
+    String? color,
+    String? name,
+  }) async {
+    String colorCondition = color == '全部' ? 'color in${(await queryColors()).transformToSQL()}' : 'color = \'$color\'';
+
+    String nameCondition = name == '全部' ? 'name in${(await queryProductNames()).transformToSQL()}' : 'name = \'$name\'';
+
+    log(colorCondition);
+    log(nameCondition);
+
+    List<Map> list = await DatabaseHelper().db.rawQuery(
+      '''SELECT * FROM product 
+      WHERE
+      $colorCondition
+      and 
+      $nameCondition
+      limit $pageSize offset(${offset * pageSize});''',
+    );
     // if (list.isNotEmpty) {
     //   List<ProductModel> products = list.map((e) => ProductModel.fromJson(e)).toList();
     //   print(products.first.toJson());
@@ -39,16 +58,18 @@ class ApiService {
   ///
   ///@desc 查询所有的颜色
   ///
-  static queryColors() async {
+  static Future<List<String>> queryColors() async {
     List list = await DatabaseHelper().db.rawQuery('select distinct color from product');
-    log(list.length);
+    log(list);
+    return list.map<String>((e) => e['color']).toList()..insert(0, '全部');
   }
 
   ///
   /// @查询所有商品名称
   ///
-  static queryProductNames() async {
+  static Future<List<String>> queryProductNames() async {
     List list = await DatabaseHelper().db.rawQuery('select distinct name from product');
     log(list.length);
+    return list.map<String>((e) => e['name']).toList()..insert(0, '全部');
   }
 }

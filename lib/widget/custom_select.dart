@@ -23,6 +23,8 @@ class CustomSelect<T> extends StatelessWidget {
 
   final SelectType selectType;
 
+  final String? defaultValue;
+
   const CustomSelect({
     Key? key,
     required this.title,
@@ -31,6 +33,7 @@ class CustomSelect<T> extends StatelessWidget {
     this.width = 80,
     this.selectType = SelectType.custom,
     this.onSearch,
+    this.defaultValue,
   }) : super(key: key);
 
   @override
@@ -45,6 +48,7 @@ class CustomSelect<T> extends StatelessWidget {
           options: options,
           onItemSelected: onItemSelected,
           onSearch: onSearch,
+          defaultValue: defaultValue,
         ),
       ],
     );

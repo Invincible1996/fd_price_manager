@@ -19,6 +19,7 @@ class Select<T> extends StatefulWidget {
   final double width;
   final SelectType type;
   final Function(String)? onSearch;
+  final String? defaultValue;
 
   const Select({
     Key? key,
@@ -27,6 +28,7 @@ class Select<T> extends StatefulWidget {
     required this.width,
     required this.type,
     this.onSearch,
+    this.defaultValue,
   }) : super(key: key);
 
   @override
@@ -35,7 +37,7 @@ class Select<T> extends StatefulWidget {
 
 class _SelectState extends State<Select> {
   OverlayEntry? overlay;
-  String selectValue = '请选择';
+  String? selectValue;
 
   TextEditingController controller = TextEditingController();
 
@@ -44,6 +46,7 @@ class _SelectState extends State<Select> {
   @override
   initState() {
     super.initState();
+    selectValue = widget.defaultValue;
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
         log('object');
@@ -75,6 +78,7 @@ class _SelectState extends State<Select> {
         left: x,
         child: Container(
           width: size.width,
+          height: 200,
           child: SingleChildScrollView(
             child: Column(
               children: widget.options
@@ -93,6 +97,7 @@ class _SelectState extends State<Select> {
                               controller.text = '$e';
                               FocusScope.of(context).unfocus();
                             }
+                            widget.onItemSelected(e);
                           },
                           child: Container(
                             // color: Colors.white,
@@ -129,9 +134,6 @@ class _SelectState extends State<Select> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onHover: (value) {
-        log(value);
-      },
       onTap: () {
         if (overlay != null) {
           overlay?.remove();
@@ -187,7 +189,7 @@ class _SelectState extends State<Select> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(selectValue),
+              Text(selectValue!),
               const Icon(Icons.arrow_drop_down),
             ],
           ),
