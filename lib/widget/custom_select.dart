@@ -25,8 +25,11 @@ class CustomSelect<T> extends StatelessWidget {
 
   final String? defaultValue;
 
+  final MenuType menuType;
+
   const CustomSelect({
     Key? key,
+    this.menuType = MenuType.list,
     required this.title,
     required this.onItemSelected,
     required this.options,
@@ -43,6 +46,7 @@ class CustomSelect<T> extends StatelessWidget {
         Text('$title: '),
         const SizedBox(width: 10),
         Select<T>(
+          menuType: menuType,
           type: selectType,
           width: width,
           options: options,

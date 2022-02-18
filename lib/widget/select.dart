@@ -14,16 +14,23 @@ enum SelectType {
   custom,
 }
 
+enum MenuType {
+  list,
+  wrap,
+}
+
 class Select<T> extends StatefulWidget {
   final Function(String) onItemSelected;
   final List<T> options;
   final double width;
   final SelectType type;
+  final MenuType menuType;
   final Function(String)? onSearch;
   final String? defaultValue;
 
   const Select({
     Key? key,
+    required this.menuType,
     required this.onItemSelected,
     required this.options,
     required this.width,
@@ -84,64 +91,125 @@ class _SelectState extends State<Select> {
                 color: Colors.transparent,
               ),
             ),
-            Positioned(
-              top: y + size.height + 6,
-              left: x,
-              child: Container(
-                constraints: BoxConstraints(
-                  maxHeight: 150,
-                ),
-                width: size.width,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: widget.options
-                        .map((e) => Material(
-                              color: Colors.white,
-                              child: InkWell(
-                                focusColor: Colors.white,
-                                hoverColor: const Color(0xFFF3F3F3),
-                                onTap: () {
-                                  setState(() {
-                                    selectValue = '$e';
-                                  });
-                                  if (widget.type == SelectType.search) {
-                                    controller.text = '$e';
-                                    FocusScope.of(context).unfocus();
-                                  }
-                                  widget.onItemSelected(e);
-                                  Navigator.pop(context);
-                                },
-                                child: Container(
-                                  // color: Colors.white,
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Text('$e'),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                  ),
-                ),
-                decoration: const BoxDecoration(
-                  // color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      // offset: Offset(-1, 4),
-                      blurRadius: 2,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            _buildMenu(context, x, y, size),
           ],
         ),
       ),
     );
+  }
+
+  ///
+  /// @desc
+  ///
+  _buildMenu(BuildContext context, x, y, size) {
+    switch (widget.menuType) {
+      case MenuType.list:
+        return Positioned(
+          top: y + size.height + 6,
+          left: x,
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: 150,
+            ),
+            width: size.width,
+            child: SingleChildScrollView(
+              child: Column(
+                children: widget.options
+                    .map((e) => Material(
+                          color: Colors.white,
+                          child: InkWell(
+                            focusColor: Colors.white,
+                            hoverColor: const Color(0xFFF3F3F3),
+                            onTap: () {
+                              setState(() {
+                                selectValue = '$e';
+                              });
+                              if (widget.type == SelectType.search) {
+                                controller.text = '$e';
+                                FocusScope.of(context).unfocus();
+                              }
+                              widget.onItemSelected(e);
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              // color: Colors.white,
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Text('$e'),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
+            decoration: const BoxDecoration(
+              // color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  // offset: Offset(-1, 4),
+                  blurRadius: 2,
+                ),
+              ],
+            ),
+          ),
+        );
+      case MenuType.wrap:
+        return Positioned(
+          top: y + size.height + 6,
+          left: x,
+          child: Container(
+            // constraints: BoxConstraints(
+            //   maxHeight: 150,
+            // ),
+            padding: EdgeInsets.all(8),
+            width: 340,
+            child: Wrap(
+              direction: Axis.horizontal,
+              children: widget.options
+                  .map((e) => Material(
+                        color: Colors.white,
+                        child: InkWell(
+                          focusColor: Colors.white,
+                          hoverColor: const Color(0xFFF3F3F3),
+                          onTap: () {
+                            setState(() {
+                              selectValue = '$e';
+                            });
+                            if (widget.type == SelectType.search) {
+                              controller.text = '$e';
+                              FocusScope.of(context).unfocus();
+                            }
+                            widget.onItemSelected(e);
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            // color: Colors.white,
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('$e'),
+                          ),
+                        ),
+                      ))
+                  .toList(),
+            ),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  // offset: Offset(-1, 4),
+                  blurRadius: 2,
+                ),
+              ],
+            ),
+          ),
+        );
+    }
   }
 
   @override

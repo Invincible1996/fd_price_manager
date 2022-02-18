@@ -2,6 +2,7 @@
 /// @date: 2022/2/14 14:39
 /// @author: kevin
 /// @description: dart
+///
 import 'package:flutter/material.dart';
 
 import '../m_colors.dart';
@@ -75,31 +76,38 @@ class CustomTable extends StatelessWidget {
                   0: FixedColumnWidth(50),
                 },
                 children: data
+                    .asMap()
                     .map(
-                      (item) => TableRow(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border(
-                            bottom: BorderSide(
-                              width: 1,
-                              color: MColors.divideColor,
+                      (key1, item) => MapEntry(
+                        key1,
+                        TableRow(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border(
+                              bottom: BorderSide(
+                                width: 1,
+                                color: MColors.divideColor,
+                              ),
                             ),
                           ),
+                          children: columns
+                              .asMap()
+                              .map(
+                                (key, e) => MapEntry(
+                                  key,
+                                  Container(
+                                    alignment: Alignment.center,
+                                    height: 40,
+                                    child: (e.builder?.call(item)) ?? Text(e.dataIndex == 'index' ? '${key1 + 1}' : '${item[e.dataIndex]}'),
+                                  ),
+                                ),
+                              )
+                              .values
+                              .toList(),
                         ),
-                        children: columns
-                            .map(
-                              (e) => Container(
-                                alignment: Alignment.center,
-                                height: 40,
-                                // child: Text('${item[e.dataIndex]}'),
-                                // child:e.builder
-                                child: (e.builder?.call(item)) ??
-                                    Text('${item[e.dataIndex]}'),
-                              ),
-                            )
-                            .toList(),
                       ),
                     )
+                    .values
                     .toList(),
               ),
             ],
@@ -130,8 +138,7 @@ class CustomTable extends StatelessWidget {
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(color: MColors.divideColor),
                         ),
-                        child: const Icon(Icons.keyboard_arrow_left_rounded,
-                            size: 22),
+                        child: const Icon(Icons.keyboard_arrow_left_rounded, size: 22),
                       ),
                       onTap: () {
                         onTapPrevious();
@@ -153,8 +160,7 @@ class CustomTable extends StatelessWidget {
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(color: MColors.divideColor),
                         ),
-                        child: const Icon(Icons.keyboard_arrow_right_rounded,
-                            size: 22),
+                        child: const Icon(Icons.keyboard_arrow_right_rounded, size: 22),
                       ),
                       onTap: () {
                         onTapNext();
@@ -163,26 +169,26 @@ class CustomTable extends StatelessWidget {
                     const SizedBox(
                       width: 10,
                     ),
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                        // width: 100
-                        padding: const EdgeInsets.all(4),
-                        height: 30,
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                          width: 1,
-                          color: MColors.divideColor,
-                          // color: MColors.primaryColor,
-                        )),
-                        child: Row(
-                          children: const [
-                            Text('10条/页'),
-                            Icon(Icons.arrow_drop_down),
-                          ],
-                        ),
-                      ),
-                    )
+                    // InkWell(
+                    //   onTap: () {},
+                    //   child: Container(
+                    //     // width: 100
+                    //     padding: const EdgeInsets.all(4),
+                    //     height: 30,
+                    //     decoration: BoxDecoration(
+                    //         border: Border.all(
+                    //       width: 1,
+                    //       color: MColors.divideColor,
+                    //       // color: MColors.primaryColor,
+                    //     )),
+                    //     child: Row(
+                    //       children: const [
+                    //         Text('10条/页'),
+                    //         Icon(Icons.arrow_drop_down),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // )
                   ],
                 ),
               )
@@ -210,9 +216,7 @@ class CustomTable extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               border: Border.all(
-                color: index == selectedIndex
-                    ? MColors.primaryColor
-                    : MColors.divideColor,
+                color: index == selectedIndex ? MColors.primaryColor : MColors.divideColor,
               ),
             ),
             width: 30,
@@ -220,9 +224,7 @@ class CustomTable extends StatelessWidget {
             child: Text(
               '${index + 1}',
               style: TextStyle(
-                color: index == selectedIndex
-                    ? MColors.primaryColor
-                    : MColors.textColor,
+                color: index == selectedIndex ? MColors.primaryColor : MColors.textColor,
               ),
             ),
           ),
