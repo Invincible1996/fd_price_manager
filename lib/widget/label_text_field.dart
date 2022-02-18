@@ -4,6 +4,8 @@
 /// @description: dart
 import 'package:flutter/material.dart';
 
+import '../m_colors.dart';
+
 class LabelTextField extends StatelessWidget {
   final String label;
   final String placeholderText;
@@ -34,6 +36,12 @@ class LabelTextField extends StatelessWidget {
                 hintStyle: const TextStyle(fontSize: 14),
                 contentPadding: const EdgeInsets.all(10),
                 isDense: true,
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: MColors.primaryColor,
+                    width: 1.0,
+                  ),
+                ),
                 border: const OutlineInputBorder(
                   borderSide: BorderSide(
                     color: Colors.teal,

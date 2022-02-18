@@ -19,6 +19,10 @@ class ProductListModel with ChangeNotifier {
 
   List<String> productNames = [];
 
+  List<String> discount = ['10', '20', '30', '40', '50', '60', '70', '80', '90', '100'];
+
+  List<String> count = List.generate(100, (index) => (index + 1).toString());
+
   int totalCount = 0;
 
   final int pageSize = 20;
@@ -29,10 +33,17 @@ class ProductListModel with ChangeNotifier {
 
   String? selectedProductName = '全部';
 
+  String assembleSelectedProductName = '五孔插';
+
+  String assembleSelectedColor = 'A7';
+
+  String assembleSelectedDiscount = '20';
+
+  String assembleSelectedCount = '1';
+
   init() async {
     await queryCount(color: selectedColor, name: selectedProductName);
-    await queryProducts(
-        offset: 0, color: selectedColor, name: selectedProductName);
+    await queryProducts(offset: 0, color: selectedColor, name: selectedProductName);
     await queryColors();
     await queryProductNames();
   }
@@ -41,8 +52,7 @@ class ProductListModel with ChangeNotifier {
   /// @desc: 查询商品的数量
   ///
   queryCount({String? name, String? color}) async {
-    var count = await ApiService.queryCount(
-        name: selectedProductName, color: selectedColor);
+    var count = await ApiService.queryCount(name: selectedProductName, color: selectedColor);
     totalCount = count;
     notifyListeners();
   }
@@ -78,8 +88,7 @@ class ProductListModel with ChangeNotifier {
   queryProducts({required int offset, String? color, String? name}) async {
     try {
       await queryCount(name: selectedProductName, color: selectedColor);
-      final res = await ApiService.queryProducts(
-          pageSize: pageSize, offset: offset, color: color, name: name);
+      final res = await ApiService.queryProducts(pageSize: pageSize, offset: offset, color: color, name: name);
       products.clear();
       products.addAll(res);
       notifyListeners();
@@ -89,10 +98,19 @@ class ProductListModel with ChangeNotifier {
   }
 
   ///
+  /// @description: 新增组合商品
   ///
-  ///
-  addAssembleProducts(Map value) {
-    assembleProducts.add(value);
+  addAssembleProducts() {
+    var assembleProduct = {};
+
+    assembleProduct['name'] = assembleSelectedProductName;
+    assembleProduct['color'] = assembleSelectedColor;
+    assembleProduct['discount'] = assembleSelectedDiscount;
+    assembleProduct['price'] = 12.00;
+    assembleProduct['count'] = assembleSelectedCount;
+    assembleProduct['totalPrices'] = (double.parse(assembleSelectedCount)) * (double.parse(assembleSelectedDiscount)) * 12.00;
+    assembleProducts.add(assembleProduct);
+    log(assembleProducts);
     notifyListeners();
   }
 }
