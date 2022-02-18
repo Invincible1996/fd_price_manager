@@ -12,8 +12,8 @@ class CustomSelect<T> extends StatelessWidget {
   final String title;
 
   //
-  final Function(String) onItemSelected;
-  final Function(String)? onSearch;
+  final Function(T) onItemSelected;
+  final Function(T)? onSearch;
 
   // 选项
   final List<T> options;
@@ -23,7 +23,7 @@ class CustomSelect<T> extends StatelessWidget {
 
   final SelectType selectType;
 
-  final String? defaultValue;
+  final T? defaultValue;
 
   final MenuType menuType;
 
@@ -43,7 +43,6 @@ class CustomSelect<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text('$title: '),
         const SizedBox(width: 10),
         Select<T>(
           menuType: menuType,

@@ -20,13 +20,13 @@ enum MenuType {
 }
 
 class Select<T> extends StatefulWidget {
-  final Function(String) onItemSelected;
+  final Function(T) onItemSelected;
   final List<T> options;
   final double width;
   final SelectType type;
   final MenuType menuType;
-  final Function(String)? onSearch;
-  final String? defaultValue;
+  final Function(T)? onSearch;
+  final T? defaultValue;
 
   const Select({
     Key? key,
@@ -40,12 +40,11 @@ class Select<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SelectState createState() => _SelectState();
+  State<Select<T>> createState() => _SelectState<T>();
 }
 
-class _SelectState extends State<Select> {
-  OverlayEntry? overlay;
-  String? selectValue;
+class _SelectState<T> extends State<Select<T>> {
+  T? selectValue;
 
   TextEditingController controller = TextEditingController();
 
@@ -59,11 +58,7 @@ class _SelectState extends State<Select> {
       if (focusNode.hasFocus) {
         log('object');
         _showSelect(context);
-      } else {
-        // hideOverlay();
-        overlay?.remove();
-        overlay = null;
-      }
+      } else {}
     });
   }
 
@@ -122,7 +117,7 @@ class _SelectState extends State<Select> {
                             hoverColor: const Color(0xFFF3F3F3),
                             onTap: () {
                               setState(() {
-                                selectValue = '$e';
+                                selectValue = e;
                               });
                               if (widget.type == SelectType.search) {
                                 controller.text = '$e';
@@ -178,7 +173,7 @@ class _SelectState extends State<Select> {
                           hoverColor: const Color(0xFFF3F3F3),
                           onTap: () {
                             setState(() {
-                              selectValue = '$e';
+                              selectValue = e;
                             });
                             if (widget.type == SelectType.search) {
                               controller.text = '$e';
@@ -216,14 +211,8 @@ class _SelectState extends State<Select> {
   Widget build(BuildContext context) {
     return Material(
       child: InkWell(
-        // hoverColor: Colors.red,
         onTap: () {
-          if (overlay != null) {
-            overlay?.remove();
-            overlay = null;
-          } else {
-            _showSelect(context);
-          }
+          _showSelect(context);
         },
         child: _buildSelect(context, widget.type),
       ),
@@ -278,7 +267,7 @@ class _SelectState extends State<Select> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(selectValue!),
+              Text('$selectValue'),
               const Icon(Icons.arrow_drop_down),
             ],
           ),
