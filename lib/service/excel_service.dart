@@ -61,7 +61,8 @@ class ExcelService {
 
       DatabaseHelper().initial().then((res) {
         // DatabaseHelper().db.execute("""INSERT INTO products(name, color, price) VALUES("三位面板带架","雕琢灰",12);""");
-        DatabaseHelper().db.execute('INSERT INTO product(name, color, price,description) VALUES${sql.toString()}');
+        DatabaseHelper().db.execute(
+            'INSERT INTO product(name, color, price,description) VALUES${sql.toString()}');
       });
     } else {
       // User canceled the picker
@@ -138,9 +139,14 @@ class ExcelService {
       sheet.getRangeByName('C${i + 2}').setText('${dataList[i]['count']}');
       sheet.getRangeByName('D${i + 2}').setText('${dataList[i]['discount']}');
       sheet.getRangeByName('E${i + 2}').setNumber(dataList[i]['price']);
-      sheet.getRangeByName('F${i + 2}').setNumber(dataList[i]['totalPrices']);
-      sheet.getRangeByName('G${i + 2}').setNumber(dataList[i]['discountPrice']);
-      sheet.getRangeByName('H${i + 2}').setNumber(dataList[i]['discountTotalPrice']);
+      sheet.getRangeByName('F${i + 2}').setText(dataList[i]['totalPrices']);
+      sheet.getRangeByName('G${i + 2}').setText(dataList[i]['discountPrice']);
+      sheet
+          .getRangeByName('G${i + 2}')
+          .setText(dataList[i]['discountTotalPrice']);
+      sheet
+          .getRangeByName('H${i + 2}')
+          .setText(dataList[i]['discountTotalPrice']);
 
       sheet.getRangeByName('A${i + 2}').cellStyle = globalStyle..fontSize = 10;
       sheet.getRangeByName('B${i + 2}').cellStyle = globalStyle..fontSize = 10;
