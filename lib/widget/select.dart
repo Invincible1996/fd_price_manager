@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../m_colors.dart';
 import '../util/log.dart';
+import 'custom_dialog.dart';
 
 enum SelectType {
   search,
@@ -65,84 +66,99 @@ class _SelectState extends State<Select> {
     RenderBox box = context.findRenderObject() as RenderBox;
     Offset position = box.localToGlobal(Offset.zero); //this is global position
     double x = position.dx;
+    double y = position.dy;
     // print(x);
     // print(y);
-
     final size = box.size;
-    // print("SIZE of Red: ${size.width}");
-    // print("SIZE of Red: ${size.height}");
-
-    overlay = OverlayEntry(builder: (context) {
-      return Positioned(
-        top: 99 + size.height + 4,
-        left: x,
-        child: Container(
-          width: size.width,
-          height: 160,
-          child: SingleChildScrollView(
-            child: Column(
-              children: widget.options
-                  .map((e) => Material(
-                        color: Colors.white,
-                        child: InkWell(
-                          focusColor: Colors.white,
-                          hoverColor: const Color(0xFFF3F3F3),
-                          onTap: () {
-                            overlay?.remove();
-                            overlay = null;
-                            setState(() {
-                              selectValue = '$e';
-                            });
-                            if (widget.type == SelectType.search) {
-                              controller.text = '$e';
-                              FocusScope.of(context).unfocus();
-                            }
-                            widget.onItemSelected(e);
-                          },
-                          child: Container(
-                            // color: Colors.white,
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Text('$e'),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ))
-                  .toList(),
-            ),
-          ),
-          decoration: const BoxDecoration(
-            // color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(4)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                // offset: Offset(-1, 4),
-                blurRadius: 2,
+    showCustomDialog(
+      context,
+      Material(
+        color: Colors.transparent,
+        child: Stack(
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                color: Colors.transparent,
               ),
-            ],
-          ),
+            ),
+            Positioned(
+              top: y + size.height + 6,
+              left: x,
+              child: Container(
+                constraints: BoxConstraints(
+                  maxHeight: 150,
+                ),
+                width: size.width,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: widget.options
+                        .map((e) => Material(
+                              color: Colors.white,
+                              child: InkWell(
+                                focusColor: Colors.white,
+                                hoverColor: const Color(0xFFF3F3F3),
+                                onTap: () {
+                                  setState(() {
+                                    selectValue = '$e';
+                                  });
+                                  if (widget.type == SelectType.search) {
+                                    controller.text = '$e';
+                                    FocusScope.of(context).unfocus();
+                                  }
+                                  widget.onItemSelected(e);
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  // color: Colors.white,
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Text('$e'),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                ),
+                decoration: const BoxDecoration(
+                  // color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(4)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      // offset: Offset(-1, 4),
+                      blurRadius: 2,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-      );
-    });
-
-    Overlay.of(context)?.insert(overlay!);
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        if (overlay != null) {
-          overlay?.remove();
-          overlay = null;
-        } else {
-          _showSelect(context);
-        }
-      },
-      child: _buildSelect(context, widget.type),
+    return Material(
+      child: InkWell(
+        // hoverColor: Colors.red,
+        onTap: () {
+          if (overlay != null) {
+            overlay?.remove();
+            overlay = null;
+          } else {
+            _showSelect(context);
+          }
+        },
+        child: _buildSelect(context, widget.type),
+      ),
     );
   }
 
@@ -154,8 +170,10 @@ class _SelectState extends State<Select> {
   _buildSelect(BuildContext context, SelectType type) {
     switch (type) {
       case SelectType.search:
-        return SizedBox(
-          width: widget.width,
+        return Container(
+          constraints: BoxConstraints(
+            maxWidth: 150,
+          ),
           child: TextFormField(
             onChanged: (value) {
               log(value);
@@ -186,6 +204,9 @@ class _SelectState extends State<Select> {
       case SelectType.custom:
         return Container(
           width: widget.width,
+          // constraints: BoxConstraints(
+          //   minWidth: 60,
+          // ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
