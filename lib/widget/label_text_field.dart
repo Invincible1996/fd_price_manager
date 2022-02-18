@@ -10,18 +10,20 @@ class LabelTextField extends StatelessWidget {
   final String label;
   final String placeholderText;
   final Function(String) onChange;
+  final double width;
 
   const LabelTextField({
     Key? key,
     required this.label,
     required this.onChange,
     required this.placeholderText,
+    this.width = 150,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 200,
+      width: width,
       child: Row(
         children: [
           Text('$label:'),

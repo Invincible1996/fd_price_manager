@@ -41,7 +41,8 @@ class ProductListModel with ChangeNotifier {
 
   init() async {
     await queryCount(color: selectedColor, name: selectedProductName);
-    await queryProducts(offset: 0, color: selectedColor, name: selectedProductName);
+    await queryProducts(
+        offset: 0, color: selectedColor, name: selectedProductName);
     await queryColors();
     await queryProductNames();
   }
@@ -50,7 +51,8 @@ class ProductListModel with ChangeNotifier {
   /// @desc: 查询商品的数量
   ///
   queryCount({String? name, String? color}) async {
-    var count = await ApiService.queryCount(name: selectedProductName, color: selectedColor);
+    var count = await ApiService.queryCount(
+        name: selectedProductName, color: selectedColor);
     totalCount = count;
     notifyListeners();
   }
@@ -86,7 +88,8 @@ class ProductListModel with ChangeNotifier {
   queryProducts({required int offset, String? color, String? name}) async {
     try {
       await queryCount(name: selectedProductName, color: selectedColor);
-      final res = await ApiService.queryProducts(pageSize: pageSize, offset: offset, color: color, name: name);
+      final res = await ApiService.queryProducts(
+          pageSize: pageSize, offset: offset, color: color, name: name);
       products.clear();
       products.addAll(res);
       notifyListeners();
@@ -107,9 +110,16 @@ class ProductListModel with ChangeNotifier {
       ..['discount'] = assembleSelectedDiscount
       ..['count'] = assembleSelectedCount
       ..['price'] = 12.00
-      ..['totalPrices'] = ((double.parse(assembleSelectedCount)) * (1 - assembleSelectedDiscount / 100) * 12.00).toStringAsFixed(2)
-      ..['discountPrice'] = ((12.00 * (1 - assembleSelectedDiscount / 100))).toStringAsFixed(2)
-      ..['discountTotalPrices'] = ((12.00 * (1 - assembleSelectedDiscount / 100)) * (double.parse(assembleSelectedCount))).toStringAsFixed(2);
+      ..['totalPrices'] = ((double.parse(assembleSelectedCount)) *
+              (1 - assembleSelectedDiscount / 100) *
+              12.00)
+          .toStringAsFixed(2)
+      ..['discountPrice'] =
+          ((12.00 * (1 - assembleSelectedDiscount / 100))).toStringAsFixed(2)
+      ..['discountTotalPrices'] =
+          ((12.00 * (1 - assembleSelectedDiscount / 100)) *
+                  (double.parse(assembleSelectedCount)))
+              .toStringAsFixed(2);
 
     assembleProducts.add(assembleProduct);
     log(assembleProducts);
@@ -121,6 +131,15 @@ class ProductListModel with ChangeNotifier {
   ///
   removeAssembleProducts(Map item) {
     assembleProducts.remove(item);
+    log(assembleProducts);
+    notifyListeners();
+  }
+
+  ///
+  /// description: 清空组合商品
+  ///
+  clearAssembleProducts() {
+    assembleProducts.clear();
     log(assembleProducts);
     notifyListeners();
   }
