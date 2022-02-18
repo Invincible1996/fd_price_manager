@@ -71,7 +71,7 @@ class _IndexPageState extends State<IndexPage> {
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                   ),
-                  GestureDetector(
+                  InkWell(
                     onTap: () {
                       setState(() {
                         _selectIndex = 0;
@@ -99,7 +99,7 @@ class _IndexPageState extends State<IndexPage> {
                       ),
                     ),
                   ),
-                  GestureDetector(
+                  InkWell(
                     onTap: () {
                       setState(() {
                         _selectIndex = 1;
@@ -127,14 +127,6 @@ class _IndexPageState extends State<IndexPage> {
                       ),
                     ),
                   ),
-                  // ListTile(
-                  //   leading: Icon(Icons.list_alt_sharp),
-                  //   title: Text('商品价格明细表'),
-                  // ),
-                  // ListTile(
-                  //   leading: Icon(Icons.list_alt_sharp),
-                  //   title: Text('商品价格组合表'),
-                  // )
                 ],
               ),
             ),

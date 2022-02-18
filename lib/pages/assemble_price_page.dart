@@ -4,6 +4,7 @@
 /// @description: dart
 import 'dart:ui';
 
+import 'package:fd_price_manager/service/excel_service.dart';
 import 'package:fd_price_manager/view_model/product_list_model.dart';
 import 'package:fd_price_manager/widget/custom_select.dart';
 import 'package:fd_price_manager/widget/label_text_field.dart';
@@ -36,26 +37,42 @@ class _AssemblePricePageState extends State<AssemblePricePage> with AutomaticKee
       TableColumnsModel(
         title: '商品名称',
         dataIndex: 'name',
+        tag: 'A2',
       ),
       TableColumnsModel(
         title: '规格',
         dataIndex: 'color',
-      ),
-      TableColumnsModel(
-        title: '单价',
-        dataIndex: 'price',
+        tag: 'B2',
       ),
       TableColumnsModel(
         title: '数量',
         dataIndex: 'count',
+        tag: 'C2',
       ),
       TableColumnsModel(
         title: '折扣',
         dataIndex: 'discount',
+        tag: 'D2',
+      ),
+      TableColumnsModel(
+        title: '单价',
+        dataIndex: 'price',
+        tag: 'E2',
       ),
       TableColumnsModel(
         title: '合计',
         dataIndex: 'totalPrices',
+        tag: 'F2',
+      ),
+      TableColumnsModel(
+        title: '单价(折扣)',
+        dataIndex: 'discountPrice',
+        tag: 'G2',
+      ),
+      TableColumnsModel(
+        title: '合计(折扣)',
+        dataIndex: 'discountTotalPrices',
+        tag: 'H2',
       ),
       TableColumnsModel(
         title: '操作',
@@ -64,7 +81,89 @@ class _AssemblePricePageState extends State<AssemblePricePage> with AutomaticKee
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextButton(onPressed: () {}, child: const Text('编辑')),
+              TextButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text('更新数据'),
+                            content: Row(
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    decoration: InputDecoration(
+                                      labelText: '数量',
+                                      isDense: true,
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: MColors.primaryColor,
+                                          width: 1.0,
+                                        ),
+                                      ),
+                                      border: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Colors.teal,
+                                          width: 1,
+                                        ),
+                                      ),
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    onChanged: (value) {},
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                  child: TextField(
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      labelText: '折扣',
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: MColors.primaryColor,
+                                          width: 1.0,
+                                        ),
+                                      ),
+                                      border: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Colors.teal,
+                                          width: 1,
+                                        ),
+                                      ),
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    onChanged: (value) {},
+                                  ),
+                                ),
+                              ],
+                            ),
+                            actions: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(70, 45),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('取消'),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(70, 45),
+                                ),
+                                onPressed: () {
+                                  Provider.of<ProductListModel>(context, listen: false).removeAssembleProducts(item);
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('确定'),
+                              ),
+                            ],
+                          );
+                        });
+                  },
+                  child: const Text('编辑')),
               TextButton(
                   onPressed: () {
                     showDialog(
@@ -82,6 +181,7 @@ class _AssemblePricePageState extends State<AssemblePricePage> with AutomaticKee
                               ),
                               ElevatedButton(
                                 onPressed: () {
+                                  Provider.of<ProductListModel>(context, listen: false).removeAssembleProducts(item);
                                   Navigator.of(context).pop();
                                 },
                                 child: Text('确定'),
@@ -107,7 +207,7 @@ class _AssemblePricePageState extends State<AssemblePricePage> with AutomaticKee
           backgroundColor: Colors.white,
           centerTitle: false,
           title: Text(
-            'AssemblePricePage',
+            '商品组合',
             style: TextStyle(color: MColors.textColor),
           ),
         ),
@@ -124,7 +224,7 @@ class _AssemblePricePageState extends State<AssemblePricePage> with AutomaticKee
                     CustomSelect<String>(
                       menuType: MenuType.wrap,
                       width: 160,
-                      defaultValue: '150W调速开关',
+                      defaultValue: '五孔插',
                       title: '名称',
                       onItemSelected: (String value) => model.assembleSelectedProductName = value,
                       options: model.productNames.where((element) => element != '全部').toList(),
@@ -166,7 +266,9 @@ class _AssemblePricePageState extends State<AssemblePricePage> with AutomaticKee
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size.square(45),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        ExcelService.export(model.assembleProducts, columns);
+                      },
                       icon: Icon(Icons.exit_to_app_rounded),
                       label: Text('导出Excel'),
                     )
@@ -189,104 +291,104 @@ class _AssemblePricePageState extends State<AssemblePricePage> with AutomaticKee
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          tooltip: '添加商品',
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Material(
-                      type: MaterialType.transparency,
-                      child: Container(
-                        color: Colors.transparent,
-                        alignment: Alignment.center,
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: Container(
-                            width: 500,
-                            height: 200,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text(
-                                    '新增',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      CustomSelect<String>(
-                                        defaultValue: '五孔插',
-                                        title: '名称',
-                                        onItemSelected: (String value) => model.assembleSelectedProductName = value,
-                                        options: model.productNames,
-                                      ),
-                                      CustomSelect<String>(
-                                        defaultValue: '10',
-                                        title: '折扣',
-                                        onItemSelected: (String value) => model.assembleSelectedDiscount = value,
-                                        options: ["10", "20", "30", "40", "50", "60", "70", "80", "90"],
-                                      ),
-                                      CustomSelect<String>(
-                                        defaultValue: 'A7',
-                                        title: '颜色',
-                                        onItemSelected: (String value) => model.assembleSelectedColor = value,
-                                        options: model.colors,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text('确定')),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text('取消'))
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                });
-          },
-          child: const Icon(Icons.add),
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   tooltip: '添加商品',
+        //   onPressed: () {
+        //     showDialog(
+        //         context: context,
+        //         builder: (context) {
+        //           return GestureDetector(
+        //             onTap: () {
+        //               Navigator.pop(context);
+        //             },
+        //             child: Material(
+        //               type: MaterialType.transparency,
+        //               child: Container(
+        //                 color: Colors.transparent,
+        //                 alignment: Alignment.center,
+        //                 child: GestureDetector(
+        //                   onTap: () {},
+        //                   child: Container(
+        //                     width: 500,
+        //                     height: 200,
+        //                     decoration: BoxDecoration(
+        //                       color: Colors.white,
+        //                       borderRadius: BorderRadius.circular(4),
+        //                     ),
+        //                     child: Column(
+        //                       crossAxisAlignment: CrossAxisAlignment.start,
+        //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //                       children: [
+        //                         const Padding(
+        //                           padding: EdgeInsets.all(8.0),
+        //                           child: Text(
+        //                             '新增',
+        //                             style: TextStyle(
+        //                               fontWeight: FontWeight.bold,
+        //                               fontSize: 18,
+        //                             ),
+        //                           ),
+        //                         ),
+        //                         Padding(
+        //                           padding: const EdgeInsets.symmetric(
+        //                             horizontal: 10,
+        //                           ),
+        //                           child: Row(
+        //                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //                             children: [
+        //                               CustomSelect<String>(
+        //                                 defaultValue: '五孔插',
+        //                                 title: '名称',
+        //                                 onItemSelected: (String value) => model.assembleSelectedProductName = value,
+        //                                 options: model.productNames,
+        //                               ),
+        //                               CustomSelect<String>(
+        //                                 defaultValue: '10',
+        //                                 title: '折扣',
+        //                                 onItemSelected: (String value) => model.assembleSelectedDiscount = value,
+        //                                 options: ["10", "20", "30", "40", "50", "60", "70", "80", "90"],
+        //                               ),
+        //                               CustomSelect<String>(
+        //                                 defaultValue: 'A7',
+        //                                 title: '颜色',
+        //                                 onItemSelected: (String value) => model.assembleSelectedColor = value,
+        //                                 options: model.colors,
+        //                               ),
+        //                             ],
+        //                           ),
+        //                         ),
+        //                         Padding(
+        //                           padding: const EdgeInsets.all(8.0),
+        //                           child: Row(
+        //                             mainAxisAlignment: MainAxisAlignment.end,
+        //                             children: [
+        //                               ElevatedButton(
+        //                                   onPressed: () {
+        //                                     Navigator.of(context).pop();
+        //                                   },
+        //                                   child: Text('确定')),
+        //                               SizedBox(
+        //                                 width: 10,
+        //                               ),
+        //                               ElevatedButton(
+        //                                   onPressed: () {
+        //                                     Navigator.of(context).pop();
+        //                                   },
+        //                                   child: Text('取消'))
+        //                             ],
+        //                           ),
+        //                         )
+        //                       ],
+        //                     ),
+        //                   ),
+        //                 ),
+        //               ),
+        //             ),
+        //           );
+        //         });
+        //   },
+        //   child: const Icon(Icons.add),
+        // ),
       );
     });
   }

@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:excel/excel.dart';
+import 'package:fd_price_manager/model/table_columns_model.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xlsio;
 
 import '../util/log.dart';
 import 'database_helper.dart';
@@ -68,5 +70,108 @@ class ExcelService {
 
   ///
   /// @desc 导出excel
-  static void export() {}
+  static void export(List dataList, List<TableColumnsModel> columns) async {
+    if (dataList.isEmpty) {
+      log("请先导入客户账单");
+      return;
+    }
+
+    // Create a new Excel document.
+    final xlsio.Workbook workbook = new xlsio.Workbook();
+    //Accessing worksheet via index.
+    final xlsio.Worksheet sheet = workbook.worksheets[0];
+    //Add Text.
+
+    xlsio.Style globalStyle = workbook.styles.add('style');
+    globalStyle.fontName = 'Times New Roman';
+    globalStyle.fontSize = 20;
+    globalStyle.fontColor = '#000000';
+    globalStyle.hAlign = xlsio.HAlignType.center;
+    globalStyle.vAlign = xlsio.VAlignType.center;
+
+    final excelHeaderTitle = '结算单';
+
+    sheet.getRangeByName("A1").setText(excelHeaderTitle);
+    sheet.getRangeByName('A1').rowHeight = 40;
+
+    // 第二行
+    for (var item in columns) {
+      if (item.tag != null) {
+        sheet.getRangeByName(item.tag!).setText(item.title);
+        sheet.getRangeByName(item.tag!).columnWidth = 15;
+        sheet.getRangeByName(item.tag!).rowHeight = 35;
+        sheet.getRangeByName(item.tag!).cellStyle = globalStyle;
+      }
+    }
+
+    // 合并居中
+    sheet.getRangeByName("A1:J1").merge();
+    sheet.getRangeByName("A1").cellStyle = globalStyle..fontSize = 30;
+
+    for (var i = 1; i < dataList.length; i++) {
+      sheet.getRangeByName('A${i + 2}').columnWidth = 15;
+      sheet.getRangeByName('A${i + 2}').rowHeight = 35;
+
+      sheet.getRangeByName('B${i + 2}').columnWidth = 15;
+      sheet.getRangeByName('B${i + 2}').rowHeight = 35;
+
+      sheet.getRangeByName('C${i + 2}').columnWidth = 15;
+      sheet.getRangeByName('C${i + 2}').rowHeight = 35;
+
+      sheet.getRangeByName('D${i + 2}').columnWidth = 15;
+      sheet.getRangeByName('D${i + 2}').rowHeight = 35;
+
+      sheet.getRangeByName('E${i + 2}').columnWidth = 15;
+      sheet.getRangeByName('E${i + 2}').rowHeight = 35;
+
+      sheet.getRangeByName('F${i + 2}').columnWidth = 15;
+      sheet.getRangeByName('F${i + 2}').rowHeight = 35;
+
+      sheet.getRangeByName('G${i + 2}').columnWidth = 15;
+      sheet.getRangeByName('G${i + 2}').rowHeight = 35;
+
+      sheet.getRangeByName('H${i + 2}').columnWidth = 25;
+      sheet.getRangeByName('H${i + 2}').rowHeight = 35;
+
+      sheet.getRangeByName('A${i + 2}').setText('${dataList[i]['name']}');
+      sheet.getRangeByName('B${i + 2}').setText('${dataList[i]['color']}');
+      sheet.getRangeByName('C${i + 2}').setText('${dataList[i]['count']}');
+      sheet.getRangeByName('D${i + 2}').setText('${dataList[i]['discount']}');
+      sheet.getRangeByName('E${i + 2}').setNumber(dataList[i]['price']);
+      sheet.getRangeByName('F${i + 2}').setNumber(dataList[i]['totalPrices']);
+      sheet.getRangeByName('G${i + 2}').setNumber(dataList[i]['discountPrice']);
+      sheet.getRangeByName('H${i + 2}').setNumber(dataList[i]['discountTotalPrice']);
+
+      sheet.getRangeByName('A${i + 2}').cellStyle = globalStyle..fontSize = 10;
+      sheet.getRangeByName('B${i + 2}').cellStyle = globalStyle..fontSize = 10;
+      sheet.getRangeByName('C${i + 2}').cellStyle = globalStyle..fontSize = 10;
+      sheet.getRangeByName('D${i + 2}').cellStyle = globalStyle..fontSize = 10;
+      sheet.getRangeByName('E${i + 2}').cellStyle = globalStyle..fontSize = 10;
+      sheet.getRangeByName('F${i + 2}').cellStyle = globalStyle..fontSize = 10;
+      sheet.getRangeByName('G${i + 2}').cellStyle = globalStyle..fontSize = 10;
+      sheet.getRangeByName('H${i + 2}').cellStyle = globalStyle..fontSize = 10;
+    }
+    final List<int> bytes = workbook.saveAsStream();
+
+    String? path = await FilePicker.platform.saveFile(
+      dialogTitle: '保存文件',
+      type: FileType.any,
+      fileName: '结算单.xlsx',
+    );
+
+    log(path);
+
+    // FilePickerCross myFile = await FilePickerCross.save(
+    //     type: FileTypeCross.any,
+    //     fileExtension:
+    //         // Available: `any`, `audio`, `image`, `video`, `custom`. Note: not available using FDE
+    //         // fileExtension:
+    //         'xlsx' // Only if FileTypeCross.custom . May be any file extension like `dot`, `ppt,pptx,odp`
+    //     );
+    // debugPrint('49---main-----${myFile.path}');
+    File(Platform.isWindows ? '${path}.xlsx' : '$path').writeAsBytes(bytes);
+    File(path!).writeAsBytes(bytes);
+    // ApiService().clearTableData();
+    workbook.dispose();
+  }
 }

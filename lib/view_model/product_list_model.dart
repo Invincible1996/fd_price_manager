@@ -103,13 +103,33 @@ class ProductListModel with ChangeNotifier {
   addAssembleProducts() {
     var assembleProduct = {};
 
-    assembleProduct['name'] = assembleSelectedProductName;
-    assembleProduct['color'] = assembleSelectedColor;
-    assembleProduct['discount'] = assembleSelectedDiscount;
-    assembleProduct['price'] = 12.00;
-    assembleProduct['count'] = assembleSelectedCount;
-    assembleProduct['totalPrices'] = (double.parse(assembleSelectedCount)) * (double.parse(assembleSelectedDiscount)) * 12.00;
+    assembleProduct
+      ..['name'] = assembleSelectedProductName
+      ..['color'] = assembleSelectedColor
+      ..['discount'] = assembleSelectedDiscount
+      ..['count'] = assembleSelectedCount
+      ..['price'] = 12.00
+      ..['totalPrices'] = (double.parse(assembleSelectedCount)) * (double.parse(assembleSelectedDiscount)) * 12.00
+      ..['discountPrice'] = (12.00 * (double.parse(assembleSelectedDiscount) / 100))
+      ..['discountTotalPrices'] = (12.00 * (double.parse(assembleSelectedDiscount) / 100)) * (double.parse(assembleSelectedCount));
+
+    // assembleProduct['name'] = assembleSelectedProductName;
+    // assembleProduct['color'] = assembleSelectedColor;
+    // assembleProduct['discount'] = assembleSelectedDiscount;
+    // assembleProduct['price'] = 12.00;
+    // assembleProduct['count'] = assembleSelectedCount;
+    // assembleProduct['totalPrices'] = (double.parse(assembleSelectedCount)) * (double.parse(assembleSelectedDiscount)) * 12.00;
+    // assembleProduct['totalPrices'] = (double.parse(assembleSelectedCount)) * (double.parse(assembleSelectedDiscount)) * 12.00;
     assembleProducts.add(assembleProduct);
+    log(assembleProducts);
+    notifyListeners();
+  }
+
+  ///
+  /// @description: 删除组合商品
+  ///
+  removeAssembleProducts(Map item) {
+    assembleProducts.remove(item);
     log(assembleProducts);
     notifyListeners();
   }
