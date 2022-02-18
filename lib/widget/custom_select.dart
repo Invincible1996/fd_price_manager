@@ -43,6 +43,7 @@ class CustomSelect<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
+        Text('$title: '),
         const SizedBox(width: 10),
         Select<T>(
           menuType: menuType,

@@ -2,6 +2,7 @@
 /// @date: 2022/2/14 13:42
 /// @author: kevin
 /// @description: dart
+import 'package:fd_price_manager/widget/select.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -111,6 +112,7 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
                         CustomSelect<String>(
                           defaultValue: '全部',
                           width: 150,
+                          menuType: MenuType.wrap,
                           // selectType: SelectType.search,
                           onSearch: (String text) async {},
                           options: model.productNames,

@@ -237,10 +237,10 @@ class _AssemblePricePageState extends State<AssemblePricePage> with AutomaticKee
                       options: model.colors.where((element) => element != '全部').toList(),
                     ),
                     SizedBox(width: 20),
-                    CustomSelect<String>(
-                      defaultValue: '20',
+                    CustomSelect<double>(
+                      defaultValue: 20,
                       title: '折扣',
-                      onItemSelected: (String value) => model.assembleSelectedDiscount = value,
+                      onItemSelected: (double value) => model.assembleSelectedDiscount = value,
                       options: model.discount,
                     ),
                     SizedBox(width: 20),

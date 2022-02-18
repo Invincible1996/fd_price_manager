@@ -19,9 +19,7 @@ class ProductListModel with ChangeNotifier {
 
   List<String> productNames = [];
 
-  List<String> discount = ['10', '20', '30', '40', '50', '60', '70', '80', '90', '100'];
-
-  List<String> count = List.generate(100, (index) => (index + 1).toString());
+  List<double> discount = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
   int totalCount = 0;
 
@@ -37,7 +35,7 @@ class ProductListModel with ChangeNotifier {
 
   String assembleSelectedColor = 'A7';
 
-  String assembleSelectedDiscount = '20';
+  double assembleSelectedDiscount = 20;
 
   String assembleSelectedCount = '1';
 
@@ -109,9 +107,9 @@ class ProductListModel with ChangeNotifier {
       ..['discount'] = assembleSelectedDiscount
       ..['count'] = assembleSelectedCount
       ..['price'] = 12.00
-      ..['totalPrices'] = ((double.parse(assembleSelectedCount)) * (double.parse(assembleSelectedDiscount)) * 12.00).toStringAsFixed(2)
-      ..['discountPrice'] = ((12.00 * (double.parse(assembleSelectedDiscount) / 100))).toStringAsFixed(2)
-      ..['discountTotalPrices'] = ((12.00 * (double.parse(assembleSelectedDiscount) / 100)) * (double.parse(assembleSelectedCount))).toStringAsFixed(2);
+      ..['totalPrices'] = ((double.parse(assembleSelectedCount)) * (1 - assembleSelectedDiscount / 100) * 12.00).toStringAsFixed(2)
+      ..['discountPrice'] = ((12.00 * (1 - assembleSelectedDiscount / 100))).toStringAsFixed(2)
+      ..['discountTotalPrices'] = ((12.00 * (1 - assembleSelectedDiscount / 100)) * (double.parse(assembleSelectedCount))).toStringAsFixed(2);
 
     assembleProducts.add(assembleProduct);
     log(assembleProducts);
