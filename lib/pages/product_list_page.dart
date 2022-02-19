@@ -2,6 +2,7 @@
 /// @date: 2022/2/14 13:42
 /// @author: kevin
 /// @description: dart
+import 'package:fd_price_manager/util/dialog_util.dart';
 import 'package:fd_price_manager/widget/select.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,42 +25,48 @@ class ProductListPage extends StatefulWidget {
 
 class _ProductListPageState extends State<ProductListPage>
     with AutomaticKeepAliveClientMixin {
-  final List<TableColumnsModel> columns = [
-    TableColumnsModel(
-      title: '#',
-      dataIndex: 'id',
-    ),
-    TableColumnsModel(
-      title: '商品名称',
-      dataIndex: 'name',
-    ),
-    TableColumnsModel(
-      title: '单价',
-      dataIndex: 'price',
-    ),
-    TableColumnsModel(
-      title: '规格',
-      dataIndex: 'color',
-    ),
-    TableColumnsModel(
-      title: '操作',
-      dataIndex: 'color',
-      builder: (item) {
-        log(item);
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(onPressed: () {}, child: Text('编辑')),
-            TextButton(onPressed: () {}, child: Text('删除')),
-          ],
-        );
-      },
-    ),
-  ];
+  List<TableColumnsModel> columns = [];
 
   @override
   initState() {
     super.initState();
+    columns = [
+      TableColumnsModel(
+        title: '#',
+        dataIndex: 'id',
+      ),
+      TableColumnsModel(
+        title: '商品名称',
+        dataIndex: 'name',
+      ),
+      TableColumnsModel(
+        title: '单价',
+        dataIndex: 'price',
+      ),
+      TableColumnsModel(
+        title: '规格',
+        dataIndex: 'color',
+      ),
+      TableColumnsModel(
+        title: '操作',
+        dataIndex: 'color',
+        builder: (item) {
+          log(item);
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(onPressed: () {}, child: Text('编辑')),
+              TextButton(
+                  onPressed: () {
+                    showCustomDialog(context,
+                        title: '提示', content: '确认删除该商品？', onConfirm: () {});
+                  },
+                  child: Text('删除')),
+            ],
+          );
+        },
+      ),
+    ];
     DatabaseHelper().initial().then((res) async {
       Provider.of<ProductListModel>(context, listen: false).init();
     });

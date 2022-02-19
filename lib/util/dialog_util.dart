@@ -17,7 +17,7 @@ showCustomDialog(
             style: ElevatedButton.styleFrom(
               minimumSize: Size.square(45),
             ),
-            child: Text('Cancel'),
+            child: Text('取消'),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -26,7 +26,7 @@ showCustomDialog(
             style: ElevatedButton.styleFrom(
               minimumSize: Size.square(45),
             ),
-            child: Text('OK'),
+            child: Text('确认'),
             onPressed: () {
               onConfirm();
               Navigator.of(context).pop();

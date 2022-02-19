@@ -96,6 +96,7 @@ class _AssemblePricePageState extends State<AssemblePricePage>
                                   child: TextField(
                                     decoration: InputDecoration(
                                       labelText: '数量',
+                                      hintText: '请输入商品数量',
                                       isDense: true,
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
@@ -122,6 +123,7 @@ class _AssemblePricePageState extends State<AssemblePricePage>
                                     decoration: InputDecoration(
                                       isDense: true,
                                       labelText: '折扣',
+                                      hintText: '请输入商品折扣',
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
                                           color: MColors.primaryColor,
