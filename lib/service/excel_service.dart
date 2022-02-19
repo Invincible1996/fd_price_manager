@@ -90,10 +90,14 @@ class ExcelService {
     globalStyle.hAlign = xlsio.HAlignType.center;
     globalStyle.vAlign = xlsio.VAlignType.center;
 
-    final excelHeaderTitle = '结算单';
+    final excelHeaderTitle = '价格统计明细';
 
     sheet.getRangeByName("A1").setText(excelHeaderTitle);
     sheet.getRangeByName('A1').rowHeight = 40;
+
+    // 合并居中
+    sheet.getRangeByName("A1:J1").merge();
+    sheet.getRangeByName("A1").cellStyle = globalStyle..fontSize = 22;
 
     // 第二行
     for (var item in columns) {
@@ -101,13 +105,12 @@ class ExcelService {
         sheet.getRangeByName(item.tag!).setText(item.title);
         sheet.getRangeByName(item.tag!).columnWidth = 15;
         sheet.getRangeByName(item.tag!).rowHeight = 35;
-        sheet.getRangeByName(item.tag!).cellStyle = globalStyle;
+        sheet.getRangeByName(item.tag!).cellStyle = globalStyle
+          ..fontSize = 16
+          ..bold = true
+          ..fontName = 'Times New Roman';
       }
     }
-
-    // 合并居中
-    sheet.getRangeByName("A1:J1").merge();
-    sheet.getRangeByName("A1").cellStyle = globalStyle..fontSize = 30;
 
     for (var i = 1; i < dataList.length; i++) {
       sheet.getRangeByName('A${i + 2}').columnWidth = 15;
@@ -136,17 +139,22 @@ class ExcelService {
 
       sheet.getRangeByName('A${i + 2}').setText('${dataList[i]['name']}');
       sheet.getRangeByName('B${i + 2}').setText('${dataList[i]['color']}');
-      sheet.getRangeByName('C${i + 2}').setText('${dataList[i]['count']}');
-      sheet.getRangeByName('D${i + 2}').setText('${dataList[i]['discount']}');
+      sheet
+          .getRangeByName('C${i + 2}')
+          .setNumber(double.parse('${dataList[i]['price']}'));
+      sheet
+          .getRangeByName('D${i + 2}')
+          .setNumber(dataList[i]['discount'].toDouble());
       sheet.getRangeByName('E${i + 2}').setNumber(dataList[i]['price']);
-      sheet.getRangeByName('F${i + 2}').setText(dataList[i]['totalPrices']);
-      sheet.getRangeByName('G${i + 2}').setText(dataList[i]['discountPrice']);
+      sheet
+          .getRangeByName('F${i + 2}')
+          .setNumber(double.parse(dataList[i]['totalPrices']));
       sheet
           .getRangeByName('G${i + 2}')
-          .setText(dataList[i]['discountTotalPrice']);
+          .setNumber(double.parse(dataList[i]['discountPrice']));
       sheet
           .getRangeByName('H${i + 2}')
-          .setText(dataList[i]['discountTotalPrice']);
+          .setNumber(double.parse(dataList[i]['discountTotalPrices']));
 
       sheet.getRangeByName('A${i + 2}').cellStyle = globalStyle..fontSize = 10;
       sheet.getRangeByName('B${i + 2}').cellStyle = globalStyle..fontSize = 10;
@@ -162,22 +170,13 @@ class ExcelService {
     String? path = await FilePicker.platform.saveFile(
       dialogTitle: '保存文件',
       type: FileType.any,
-      fileName: '结算单.xlsx',
+      fileName: '$excelHeaderTitle.xlsx',
     );
 
-    log(path);
-
-    // FilePickerCross myFile = await FilePickerCross.save(
-    //     type: FileTypeCross.any,
-    //     fileExtension:
-    //         // Available: `any`, `audio`, `image`, `video`, `custom`. Note: not available using FDE
-    //         // fileExtension:
-    //         'xlsx' // Only if FileTypeCross.custom . May be any file extension like `dot`, `ppt,pptx,odp`
-    //     );
-    // debugPrint('49---main-----${myFile.path}');
-    File(Platform.isWindows ? '${path}.xlsx' : '$path').writeAsBytes(bytes);
-    File(path!).writeAsBytes(bytes);
-    // ApiService().clearTableData();
-    workbook.dispose();
+    if (path != null) {
+      final file = File(path);
+      file.writeAsBytes(bytes);
+      workbook.dispose();
+    }
   }
 }
