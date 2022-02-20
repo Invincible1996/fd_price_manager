@@ -48,5 +48,5 @@ jobs:
       - name: Create Github Release
       - uses: ncipollo/release-action@v1
       - with:
-          artifacts: "build\windows\runner\Release\release-${{ steps.get_version.outputs.VERSION }}.zip"
+          artifacts: "build/windows/runner/Release/release-${{ steps.get_version.outputs.VERSION }}.zip"
           token: ${{ secrets.RELEASES_TOKEN }}
