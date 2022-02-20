@@ -55,6 +55,7 @@ class CustomTable extends StatelessWidget {
                   .map(
                     (e) => Container(
                       height: 40,
+                      color: e.title.contains('(折扣)') ? Color(0xFF00ff00) : MColors.tableHeaderBgcolor,
                       alignment: Alignment.center,
                       child: Text(
                         '${e.title}',
@@ -97,6 +98,7 @@ class CustomTable extends StatelessWidget {
                                   key,
                                   Container(
                                     alignment: Alignment.center,
+                                    color: key == 7 || key == 8 ? Color(0xFF00ff00) : Colors.white,
                                     height: 40,
                                     child: (e.builder?.call(key1, item)) ??
                                         Text(e.dataIndex == 'index' ? '${key1 + 1}' : '${item[e.dataIndex]}'),

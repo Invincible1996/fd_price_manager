@@ -120,7 +120,7 @@ class _IndexPageState extends State<IndexPage> {
                             width: 10,
                           ),
                           Text(
-                            '商品价格明细表',
+                            '商品组合',
                             style: TextStyle(color: _selectIndex == 1 ? Colors.white : MColors.textColor),
                           ),
                         ],

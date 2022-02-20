@@ -95,7 +95,7 @@ class ExcelService {
     sheet.getRangeByName('A1').rowHeight = 40;
 
     // 合并居中
-    sheet.getRangeByName("A1:J1").merge();
+    sheet.getRangeByName("A1:H1").merge();
     sheet.getRangeByName("A1").cellStyle = globalStyle..fontSize = 22;
 
     // 第二行

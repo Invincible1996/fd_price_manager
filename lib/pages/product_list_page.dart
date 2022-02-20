@@ -78,7 +78,7 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
         elevation: 0.5,
         backgroundColor: Colors.white,
         title: Text(
-          'ProductListPage',
+          '商品价格列表',
           style: TextStyle(color: MColors.textColor),
         ),
         centerTitle: false,
