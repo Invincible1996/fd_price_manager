@@ -23,7 +23,7 @@ class MColors {
     },
   );
 
-  static Color divideColor = const Color(0xFFe6e6e6);
+  static Color divideColor = const Color(0xFFcccccc);
 
   static Color textColor = const Color(0xFF333333);
 

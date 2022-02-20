@@ -55,7 +55,7 @@ class CustomTable extends StatelessWidget {
                   .map(
                     (e) => Container(
                       height: 40,
-                      color: e.title.contains('(折扣)') ? Color(0xFF00ff00) : MColors.tableHeaderBgcolor,
+                      color: MColors.tableHeaderBgcolor,
                       alignment: Alignment.center,
                       child: Text(
                         '${e.title}',
@@ -70,51 +70,64 @@ class CustomTable extends StatelessWidget {
           ],
         ),
         Expanded(
-          child: ListView(
-            children: [
-              Table(
-                columnWidths: const <int, TableColumnWidth>{
-                  0: FixedColumnWidth(50),
-                },
-                children: data
-                    .asMap()
-                    .map(
-                      (key1, item) => MapEntry(
-                        key1,
-                        TableRow(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border(
-                              bottom: BorderSide(
-                                width: 1,
-                                color: MColors.divideColor,
-                              ),
-                            ),
-                          ),
-                          children: columns
-                              .asMap()
-                              .map(
-                                (key, e) => MapEntry(
-                                  key,
-                                  Container(
-                                    alignment: Alignment.center,
-                                    color: key == 7 || key == 8 ? Color(0xFF00ff00) : Colors.white,
-                                    height: 40,
-                                    child: (e.builder?.call(key1, item)) ??
-                                        Text(e.dataIndex == 'index' ? '${key1 + 1}' : '${item[e.dataIndex]}'),
+          child: data.isEmpty
+              ? Container(
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.warning_amber_outlined),
+                      Text(
+                        '暂无数据',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView(
+                  children: [
+                    Table(
+                      columnWidths: const <int, TableColumnWidth>{
+                        0: FixedColumnWidth(50),
+                      },
+                      children: data
+                          .asMap()
+                          .map(
+                            (key1, item) => MapEntry(
+                              key1,
+                              TableRow(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      width: 1,
+                                      color: MColors.divideColor,
+                                    ),
                                   ),
                                 ),
-                              )
-                              .values
-                              .toList(),
-                        ),
-                      ),
-                    )
-                    .values
-                    .toList(),
-              ),
-            ],
-          ),
+                                children: columns
+                                    .asMap()
+                                    .map(
+                                      (key, e) => MapEntry(
+                                        key,
+                                        Container(
+                                          alignment: Alignment.center,
+                                          height: 40,
+                                          child: (e.builder?.call(key1, item)) ??
+                                              Text(e.dataIndex == 'index' ? '${key1 + 1}' : '${item[e.dataIndex]}'),
+                                        ),
+                                      ),
+                                    )
+                                    .values
+                                    .toList(),
+                              ),
+                            ),
+                          )
+                          .values
+                          .toList(),
+                    ),
+                  ],
+                ),
         ),
         isShowPagination
             ? Container(

@@ -67,10 +67,50 @@ class _AssemblePricePageState extends State<AssemblePricePage> with AutomaticKee
         title: '单价(折扣)',
         dataIndex: 'discountPrice',
         tag: 'G2',
+        builder: (index, item) {
+          return Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.green,
+              border: Border(
+                bottom: BorderSide(
+                  color: MColors.divideColor,
+                  width: 1,
+                ),
+              ),
+            ),
+            child: Text(
+              '${item['discountPrice']}',
+              style: TextStyle(
+                  // color: MColors.text_red,
+                  ),
+            ),
+          );
+        },
       ),
       TableColumnsModel(
         title: '合计(折扣)',
         dataIndex: 'discountTotalPrices',
+        builder: (index, item) {
+          return Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.green,
+              border: Border(
+                bottom: BorderSide(
+                  color: MColors.divideColor,
+                  width: 1,
+                ),
+              ),
+            ),
+            child: Text(
+              '${item['discountTotalPrices']}',
+              style: TextStyle(
+                  // color: MColors.text_red,
+                  ),
+            ),
+          );
+        },
         tag: 'H2',
       ),
       TableColumnsModel(
