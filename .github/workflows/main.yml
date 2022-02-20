@@ -45,8 +45,6 @@ jobs:
       - name: Zip
         run: |
           7z a release-${{ steps.get_version.outputs.VERSION }}.zip ./build/windows/runner/Release/*
-      - name: Create Github Release
-      - uses: ncipollo/release-action@v1
-      - with:
-          artifacts: "build/windows/runner/Release/release-${{ steps.get_version.outputs.VERSION }}.zip"
-          token: ${{ secrets.RELEASES_TOKEN }}
+      - name: Print
+        run: |
+          echo $pwd
