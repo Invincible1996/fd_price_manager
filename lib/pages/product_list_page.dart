@@ -84,7 +84,7 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
         centerTitle: false,
       ),
       body: Consumer<ProductListModel>(builder: (context, model, _) {
-        print(model.products);
+        // print(model.products);
         return Container(
           color: MColors.bgColor,
           child: Column(
