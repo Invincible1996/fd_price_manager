@@ -32,7 +32,7 @@ class ApiService {
   ///
   ///
   static Future<List<Map>> queryProducts({
-    int pageSize = 0,
+    int pageSize = 20,
     int offset = 0,
     String? color,
     String? name,

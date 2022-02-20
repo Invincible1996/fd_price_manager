@@ -98,7 +98,8 @@ class CustomTable extends StatelessWidget {
                                   Container(
                                     alignment: Alignment.center,
                                     height: 40,
-                                    child: (e.builder?.call(item)) ?? Text(e.dataIndex == 'index' ? '${key1 + 1}' : '${item[e.dataIndex]}'),
+                                    child: (e.builder?.call(key1, item)) ??
+                                        Text(e.dataIndex == 'index' ? '${key1 + 1}' : '${item[e.dataIndex]}'),
                                   ),
                                 ),
                               )

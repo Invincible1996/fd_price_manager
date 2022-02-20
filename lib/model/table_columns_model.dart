@@ -7,7 +7,7 @@ class TableColumnsModel {
   String? tag;
 
   // define the item of the column, default is Text
-  Widget Function(Map data)? builder;
+  Widget Function(int index, Map data)? builder;
 
   TableColumnsModel({
     required this.title,

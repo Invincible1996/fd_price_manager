@@ -6,7 +6,7 @@
 ///
 extension ListExtension on List {
   ///
-  /// @description: List转换String
+  /// @description: List转换 sql String
   /// @param {type}
   /// @return:
   ///

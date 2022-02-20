@@ -2,20 +2,18 @@
 /// @date: 2022/2/14 13:44
 /// @author: kevin
 /// @description: dart
-import 'dart:ui';
-
-import 'package:fd_price_manager/service/excel_service.dart';
-import 'package:fd_price_manager/util/dialog_util.dart';
-import 'package:fd_price_manager/view_model/product_list_model.dart';
-import 'package:fd_price_manager/widget/custom_select.dart';
-import 'package:fd_price_manager/widget/label_text_field.dart';
-import 'package:fd_price_manager/widget/select.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../m_colors.dart';
 import '../model/table_columns_model.dart';
+import '../service/excel_service.dart';
+import '../util/dialog_util.dart';
+import '../view_model/product_list_model.dart';
+import '../widget/custom_select.dart';
 import '../widget/custom_table.dart';
+import '../widget/label_text_field.dart';
+import '../widget/select.dart';
 
 class AssemblePricePage extends StatefulWidget {
   const AssemblePricePage({Key? key}) : super(key: key);
@@ -24,8 +22,7 @@ class AssemblePricePage extends StatefulWidget {
   _AssemblePricePageState createState() => _AssemblePricePageState();
 }
 
-class _AssemblePricePageState extends State<AssemblePricePage>
-    with AutomaticKeepAliveClientMixin {
+class _AssemblePricePageState extends State<AssemblePricePage> with AutomaticKeepAliveClientMixin {
   List<TableColumnsModel> columns = [];
 
   @override
@@ -79,21 +76,27 @@ class _AssemblePricePageState extends State<AssemblePricePage>
       TableColumnsModel(
         title: '操作',
         dataIndex: 'action',
-        builder: (item) {
+        builder: (index, item) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
                   onPressed: () {
+                    var pModel = Provider.of<ProductListModel>(context, listen: false);
+
+                    pModel.currentItemIndex = index;
                     showDialog(
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text('更新数据'),
+                            title: Text(
+                              '更新数据',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                             content: Row(
                               children: [
                                 Expanded(
-                                  child: TextField(
+                                  child: TextFormField(
                                     decoration: InputDecoration(
                                       labelText: '数量',
                                       hintText: '请输入商品数量',
@@ -111,15 +114,31 @@ class _AssemblePricePageState extends State<AssemblePricePage>
                                         ),
                                       ),
                                     ),
+                                    initialValue: item['count'].toString(),
                                     keyboardType: TextInputType.number,
-                                    onChanged: (value) {},
+                                    onChanged: (value) {
+                                      if (value.isEmpty) {
+                                        pModel.editCount = 0;
+                                      } else {
+                                        pModel.editCount = int.parse(value);
+                                      }
+                                    },
                                   ),
                                 ),
                                 SizedBox(
                                   width: 20,
                                 ),
                                 Expanded(
-                                  child: TextField(
+                                  child: TextFormField(
+                                    initialValue: item['discount'].toString(),
+                                    onChanged: (value) {
+                                      if (value.isEmpty) {
+                                        pModel.updateDiscount(index, '1');
+                                      } else {
+                                        pModel.updateDiscount(index, value);
+                                      }
+                                      // pModel.updateDiscount(index, value);
+                                    },
                                     decoration: InputDecoration(
                                       isDense: true,
                                       labelText: '折扣',
@@ -138,7 +157,6 @@ class _AssemblePricePageState extends State<AssemblePricePage>
                                       ),
                                     ),
                                     keyboardType: TextInputType.number,
-                                    onChanged: (value) {},
                                   ),
                                 ),
                               ],
@@ -158,9 +176,7 @@ class _AssemblePricePageState extends State<AssemblePricePage>
                                   minimumSize: Size(70, 45),
                                 ),
                                 onPressed: () {
-                                  Provider.of<ProductListModel>(context,
-                                          listen: false)
-                                      .removeAssembleProducts(item);
+                                  pModel.updateAssembleCountAndDiscount(index);
                                   Navigator.of(context).pop();
                                 },
                                 child: Text('确定'),
@@ -171,34 +187,33 @@ class _AssemblePricePageState extends State<AssemblePricePage>
                   },
                   child: const Text('编辑')),
               TextButton(
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text('提示'),
-                            content: Text('确定删除该条数据吗？'),
-                            actions: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('取消'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Provider.of<ProductListModel>(context,
-                                          listen: false)
-                                      .removeAssembleProducts(item);
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('确定'),
-                              ),
-                            ],
-                          );
-                        });
-                  },
-                  child: const Text('删除')),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text('提示'),
+                          content: Text('确定删除该条数据吗？'),
+                          actions: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('取消'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Provider.of<ProductListModel>(context, listen: false).removeAssembleProducts(item);
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('确定'),
+                            ),
+                          ],
+                        );
+                      });
+                },
+                child: const Text('删除'),
+              ),
             ],
           );
         },
@@ -235,36 +250,29 @@ class _AssemblePricePageState extends State<AssemblePricePage>
                       width: 160,
                       defaultValue: '五孔插',
                       title: '名称',
-                      onItemSelected: (String value) =>
-                          model.assembleSelectedProductName = value,
-                      options: model.productNames
-                          .where((element) => element != '全部')
-                          .toList(),
+                      onItemSelected: (String value) => model.assembleSelectedProductName = value,
+                      options: model.productNames.where((element) => element != '全部').toList(),
                     ),
                     SizedBox(width: 20),
                     CustomSelect<String>(
                       defaultValue: 'A7',
                       title: '颜色',
-                      onItemSelected: (String value) =>
-                          model.assembleSelectedColor = value,
-                      options: model.colors
-                          .where((element) => element != '全部')
-                          .toList(),
+                      onItemSelected: (String value) => model.assembleSelectedColor = value,
+                      options: model.colors.where((element) => element != '全部').toList(),
                     ),
                     SizedBox(width: 20),
                     CustomSelect<double>(
                       defaultValue: 20,
                       title: '折扣',
-                      onItemSelected: (double value) =>
-                          model.assembleSelectedDiscount = value,
+                      onItemSelected: (double value) => model.assembleSelectedDiscount = value,
                       options: model.discount,
                     ),
                     SizedBox(width: 20),
                     LabelTextField(
+                      initialValue: '1',
                       width: 100,
                       label: '数量',
-                      onChange: (String value) =>
-                          model.assembleSelectedCount = value,
+                      onChange: (String value) => model.assembleSelectedCount = int.parse(value),
                       placeholderText: '',
                     ),
                     Expanded(child: Container()),
@@ -297,8 +305,7 @@ class _AssemblePricePageState extends State<AssemblePricePage>
                         primary: Colors.red,
                       ),
                       onPressed: () {
-                        showCustomDialog(context,
-                            title: '提示', content: '确定清除吗？', onConfirm: () {
+                        showCustomDialog(context, title: '提示', content: '确定清除吗？', onConfirm: () {
                           model.clearAssembleProducts();
                         });
                       },

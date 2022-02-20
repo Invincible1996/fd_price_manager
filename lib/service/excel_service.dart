@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:excel/excel.dart';
-import 'package:fd_price_manager/model/table_columns_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xlsio;
 
+import '../model/table_columns_model.dart';
 import '../util/log.dart';
 import 'database_helper.dart';
 
@@ -32,8 +32,6 @@ class ExcelService {
 
       for (var table in excel.tables.keys) {
         log(table); //sheet Name
-        log(excel.tables[table]?.maxCols);
-        log(excel.tables[table]?.maxRows);
         // for (var row in excel.tables[table]?.rows ?? []) {
         //   print("$row");
         // }
@@ -61,8 +59,7 @@ class ExcelService {
 
       DatabaseHelper().initial().then((res) {
         // DatabaseHelper().db.execute("""INSERT INTO products(name, color, price) VALUES("三位面板带架","雕琢灰",12);""");
-        DatabaseHelper().db.execute(
-            'INSERT INTO product(name, color, price,description) VALUES${sql.toString()}');
+        DatabaseHelper().db.execute('INSERT INTO product(name, color, price,description) VALUES${sql.toString()}');
       });
     } else {
       // User canceled the picker
@@ -72,6 +69,8 @@ class ExcelService {
   ///
   /// @desc 导出excel
   static void export(List dataList, List<TableColumnsModel> columns) async {
+    log(dataList);
+
     if (dataList.isEmpty) {
       log("请先导入客户账单");
       return;
@@ -112,58 +111,48 @@ class ExcelService {
       }
     }
 
-    for (var i = 1; i < dataList.length; i++) {
-      sheet.getRangeByName('A${i + 2}').columnWidth = 15;
-      sheet.getRangeByName('A${i + 2}').rowHeight = 35;
+    for (var i = 0; i < dataList.length; i++) {
+      sheet.getRangeByName('A${i + 3}').columnWidth = 15;
+      sheet.getRangeByName('A${i + 3}').rowHeight = 35;
 
-      sheet.getRangeByName('B${i + 2}').columnWidth = 15;
-      sheet.getRangeByName('B${i + 2}').rowHeight = 35;
+      sheet.getRangeByName('B${i + 3}').columnWidth = 15;
+      sheet.getRangeByName('B${i + 3}').rowHeight = 35;
 
-      sheet.getRangeByName('C${i + 2}').columnWidth = 15;
-      sheet.getRangeByName('C${i + 2}').rowHeight = 35;
+      sheet.getRangeByName('C${i + 3}').columnWidth = 15;
+      sheet.getRangeByName('C${i + 3}').rowHeight = 35;
 
-      sheet.getRangeByName('D${i + 2}').columnWidth = 15;
-      sheet.getRangeByName('D${i + 2}').rowHeight = 35;
+      sheet.getRangeByName('D${i + 3}').columnWidth = 15;
+      sheet.getRangeByName('D${i + 3}').rowHeight = 35;
 
-      sheet.getRangeByName('E${i + 2}').columnWidth = 15;
-      sheet.getRangeByName('E${i + 2}').rowHeight = 35;
+      sheet.getRangeByName('E${i + 3}').columnWidth = 15;
+      sheet.getRangeByName('E${i + 3}').rowHeight = 35;
 
-      sheet.getRangeByName('F${i + 2}').columnWidth = 15;
-      sheet.getRangeByName('F${i + 2}').rowHeight = 35;
+      sheet.getRangeByName('F${i + 3}').columnWidth = 15;
+      sheet.getRangeByName('F${i + 3}').rowHeight = 35;
 
-      sheet.getRangeByName('G${i + 2}').columnWidth = 15;
-      sheet.getRangeByName('G${i + 2}').rowHeight = 35;
+      sheet.getRangeByName('G${i + 3}').columnWidth = 15;
+      sheet.getRangeByName('G${i + 3}').rowHeight = 35;
 
-      sheet.getRangeByName('H${i + 2}').columnWidth = 25;
-      sheet.getRangeByName('H${i + 2}').rowHeight = 35;
+      sheet.getRangeByName('H${i + 3}').columnWidth = 25;
+      sheet.getRangeByName('H${i + 3}').rowHeight = 35;
 
-      sheet.getRangeByName('A${i + 2}').setText('${dataList[i]['name']}');
-      sheet.getRangeByName('B${i + 2}').setText('${dataList[i]['color']}');
-      sheet
-          .getRangeByName('C${i + 2}')
-          .setNumber(double.parse('${dataList[i]['price']}'));
-      sheet
-          .getRangeByName('D${i + 2}')
-          .setNumber(dataList[i]['discount'].toDouble());
-      sheet.getRangeByName('E${i + 2}').setNumber(dataList[i]['price']);
-      sheet
-          .getRangeByName('F${i + 2}')
-          .setNumber(double.parse(dataList[i]['totalPrices']));
-      sheet
-          .getRangeByName('G${i + 2}')
-          .setNumber(double.parse(dataList[i]['discountPrice']));
-      sheet
-          .getRangeByName('H${i + 2}')
-          .setNumber(double.parse(dataList[i]['discountTotalPrices']));
+      sheet.getRangeByName('A${i + 3}').setText('${dataList[i]['name']}');
+      sheet.getRangeByName('B${i + 3}').setText('${dataList[i]['color']}');
+      sheet.getRangeByName('C${i + 3}').setNumber(double.parse('${dataList[i]['price']}'));
+      sheet.getRangeByName('D${i + 3}').setNumber(dataList[i]['discount'].toDouble());
+      sheet.getRangeByName('E${i + 3}').setNumber(dataList[i]['price']);
+      sheet.getRangeByName('F${i + 3}').setNumber(double.parse(dataList[i]['totalPrices']));
+      sheet.getRangeByName('G${i + 3}').setNumber(double.parse(dataList[i]['discountPrice']));
+      sheet.getRangeByName('H${i + 3}').setNumber(double.parse(dataList[i]['discountTotalPrices']));
 
-      sheet.getRangeByName('A${i + 2}').cellStyle = globalStyle..fontSize = 10;
-      sheet.getRangeByName('B${i + 2}').cellStyle = globalStyle..fontSize = 10;
-      sheet.getRangeByName('C${i + 2}').cellStyle = globalStyle..fontSize = 10;
-      sheet.getRangeByName('D${i + 2}').cellStyle = globalStyle..fontSize = 10;
-      sheet.getRangeByName('E${i + 2}').cellStyle = globalStyle..fontSize = 10;
-      sheet.getRangeByName('F${i + 2}').cellStyle = globalStyle..fontSize = 10;
-      sheet.getRangeByName('G${i + 2}').cellStyle = globalStyle..fontSize = 10;
-      sheet.getRangeByName('H${i + 2}').cellStyle = globalStyle..fontSize = 10;
+      sheet.getRangeByName('A${i + 3}').cellStyle = globalStyle..fontSize = 10;
+      sheet.getRangeByName('B${i + 3}').cellStyle = globalStyle..fontSize = 10;
+      sheet.getRangeByName('C${i + 3}').cellStyle = globalStyle..fontSize = 10;
+      sheet.getRangeByName('D${i + 3}').cellStyle = globalStyle..fontSize = 10;
+      sheet.getRangeByName('E${i + 3}').cellStyle = globalStyle..fontSize = 10;
+      sheet.getRangeByName('F${i + 3}').cellStyle = globalStyle..fontSize = 10;
+      sheet.getRangeByName('G${i + 3}').cellStyle = globalStyle..fontSize = 10;
+      sheet.getRangeByName('H${i + 3}').cellStyle = globalStyle..fontSize = 10;
     }
     final List<int> bytes = workbook.saveAsStream();
 

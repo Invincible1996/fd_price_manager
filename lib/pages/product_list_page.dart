@@ -2,8 +2,6 @@
 /// @date: 2022/2/14 13:42
 /// @author: kevin
 /// @description: dart
-import 'package:fd_price_manager/util/dialog_util.dart';
-import 'package:fd_price_manager/widget/select.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,10 +9,12 @@ import '../m_colors.dart';
 import '../model/table_columns_model.dart';
 import '../service/database_helper.dart';
 import '../service/excel_service.dart';
+import '../util/dialog_util.dart';
 import '../util/log.dart';
 import '../view_model/product_list_model.dart';
 import '../widget/custom_select.dart';
 import '../widget/custom_table.dart';
+import '../widget/select.dart';
 
 class ProductListPage extends StatefulWidget {
   const ProductListPage({Key? key}) : super(key: key);
@@ -23,8 +23,7 @@ class ProductListPage extends StatefulWidget {
   _ProductListPageState createState() => _ProductListPageState();
 }
 
-class _ProductListPageState extends State<ProductListPage>
-    with AutomaticKeepAliveClientMixin {
+class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAliveClientMixin {
   List<TableColumnsModel> columns = [];
 
   @override
@@ -50,7 +49,7 @@ class _ProductListPageState extends State<ProductListPage>
       TableColumnsModel(
         title: '操作',
         dataIndex: 'color',
-        builder: (item) {
+        builder: (index, item) {
           log(item);
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -58,8 +57,7 @@ class _ProductListPageState extends State<ProductListPage>
               TextButton(onPressed: () {}, child: Text('编辑')),
               TextButton(
                   onPressed: () {
-                    showCustomDialog(context,
-                        title: '提示', content: '确认删除该商品？', onConfirm: () {});
+                    showCustomDialog(context, title: '提示', content: '确认删除该商品？', onConfirm: () {});
                   },
                   child: Text('删除')),
             ],
@@ -85,7 +83,7 @@ class _ProductListPageState extends State<ProductListPage>
         ),
         centerTitle: false,
       ),
-      body: Consumer<ProductListModel>(builder: (contex, model, _) {
+      body: Consumer<ProductListModel>(builder: (context, model, _) {
         print(model.products);
         return Container(
           color: MColors.bgColor,
@@ -184,9 +182,7 @@ class _ProductListPageState extends State<ProductListPage>
                   totalCount: model.totalCount,
                   pageSize: model.pageSize,
                   onTapNext: () async {
-                    var totalGroupSize = (model.totalCount / model.pageSize)
-                        .ceilToDouble()
-                        .toInt();
+                    var totalGroupSize = (model.totalCount / model.pageSize).ceilToDouble().toInt();
                     if (model.offset == totalGroupSize - 1) {
                       return;
                     }

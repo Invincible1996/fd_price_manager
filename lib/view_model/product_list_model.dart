@@ -1,12 +1,12 @@
-import 'package:fd_price_manager/service/api_service.dart';
-import 'package:fd_price_manager/util/log.dart';
-import 'package:flutter/foundation.dart';
-
 ///
 /// @date: 2022/2/17 15:23
 /// @author: kevin
 /// @description: dart
 ///
+import 'package:flutter/foundation.dart';
+
+import '../service/api_service.dart';
+import '../util/log.dart';
 
 class ProductListModel with ChangeNotifier {
   // 所有商品
@@ -37,12 +37,19 @@ class ProductListModel with ChangeNotifier {
 
   double assembleSelectedDiscount = 20;
 
-  String assembleSelectedCount = '1';
+  int assembleSelectedCount = 1;
+
+  int currentItemIndex = 0;
+
+  //编辑后的数量
+  int editCount = 1;
+
+  //编辑后的折扣
+  double editDiscount = 0;
 
   init() async {
     await queryCount(color: selectedColor, name: selectedProductName);
-    await queryProducts(
-        offset: 0, color: selectedColor, name: selectedProductName);
+    await queryProducts(offset: 0, color: selectedColor, name: selectedProductName);
     await queryColors();
     await queryProductNames();
   }
@@ -51,8 +58,7 @@ class ProductListModel with ChangeNotifier {
   /// @desc: 查询商品的数量
   ///
   queryCount({String? name, String? color}) async {
-    var count = await ApiService.queryCount(
-        name: selectedProductName, color: selectedColor);
+    var count = await ApiService.queryCount(name: selectedProductName, color: selectedColor);
     totalCount = count;
     notifyListeners();
   }
@@ -88,8 +94,7 @@ class ProductListModel with ChangeNotifier {
   queryProducts({required int offset, String? color, String? name}) async {
     try {
       await queryCount(name: selectedProductName, color: selectedColor);
-      final res = await ApiService.queryProducts(
-          pageSize: pageSize, offset: offset, color: color, name: name);
+      final res = await ApiService.queryProducts(pageSize: pageSize, offset: offset, color: color, name: name);
       products.clear();
       products.addAll(res);
       notifyListeners();
@@ -101,25 +106,30 @@ class ProductListModel with ChangeNotifier {
   ///
   /// @description: 新增组合商品
   ///
-  addAssembleProducts() {
+  addAssembleProducts() async {
     var assembleProduct = {};
+
+    var res = await ApiService.queryProducts(name: assembleSelectedProductName, color: assembleSelectedColor);
+    if (res.isEmpty) {
+      return;
+    }
+
+    var price = res.first['price'];
+
+    editCount = assembleSelectedCount;
+
+    editDiscount = assembleSelectedDiscount;
 
     assembleProduct
       ..['name'] = assembleSelectedProductName
       ..['color'] = assembleSelectedColor
       ..['discount'] = assembleSelectedDiscount
       ..['count'] = assembleSelectedCount
-      ..['price'] = 12.00
-      ..['totalPrices'] = ((double.parse(assembleSelectedCount)) *
-              (1 - assembleSelectedDiscount / 100) *
-              12.00)
-          .toStringAsFixed(2)
-      ..['discountPrice'] =
-          ((12.00 * (1 - assembleSelectedDiscount / 100))).toStringAsFixed(2)
+      ..['price'] = price
+      ..['totalPrices'] = (assembleSelectedCount * price).toStringAsFixed(2)
+      ..['discountPrice'] = ((price * (1 - assembleSelectedDiscount / 100))).toStringAsFixed(2)
       ..['discountTotalPrices'] =
-          ((12.00 * (1 - assembleSelectedDiscount / 100)) *
-                  (double.parse(assembleSelectedCount)))
-              .toStringAsFixed(2);
+          ((price * (1 - assembleSelectedDiscount / 100)) * assembleSelectedCount).toStringAsFixed(2);
 
     assembleProducts.add(assembleProduct);
     log(assembleProducts);
@@ -140,6 +150,33 @@ class ProductListModel with ChangeNotifier {
   ///
   clearAssembleProducts() {
     assembleProducts.clear();
+    log(assembleProducts);
+    notifyListeners();
+  }
+
+  /// @description: 修改商品折扣
+  void updateDiscount(int index, String value) {
+    log(index);
+    log(value);
+    editDiscount = double.parse(value);
+  }
+
+  /// @description: 修改商品数量
+  void updateCount(int index, String value) {
+    log(index);
+    log(value);
+    editCount = int.parse(value);
+  }
+
+  /// @description: 修改组合商品数量和折扣
+  void updateAssembleCountAndDiscount(int index) {
+    assembleProducts[index]['count'] = editCount;
+    assembleProducts[index]['discount'] = editDiscount;
+    assembleProducts[index]['totalPrices'] = (assembleProducts[index]['price'] * editCount).toStringAsFixed(2);
+    assembleProducts[index]['discountPrice'] =
+        (assembleProducts[index]['price'] * (1 - editDiscount / 100)).toStringAsFixed(2);
+    assembleProducts[index]['discountTotalPrices'] =
+        (assembleProducts[index]['price'] * (1 - editDiscount / 100) * editCount).toStringAsFixed(2);
     log(assembleProducts);
     notifyListeners();
   }

@@ -11,6 +11,7 @@ class LabelTextField extends StatelessWidget {
   final String placeholderText;
   final Function(String) onChange;
   final double width;
+  final String initialValue;
 
   const LabelTextField({
     Key? key,
@@ -18,6 +19,7 @@ class LabelTextField extends StatelessWidget {
     required this.onChange,
     required this.placeholderText,
     this.width = 150,
+    this.initialValue = "",
   }) : super(key: key);
 
   @override
@@ -32,6 +34,7 @@ class LabelTextField extends StatelessWidget {
           ),
           Expanded(
             child: TextFormField(
+              initialValue: initialValue,
               onChanged: onChange,
               decoration: InputDecoration(
                 hintText: placeholderText,
