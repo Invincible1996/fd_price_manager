@@ -34,7 +34,7 @@ jobs:
       - name: Copy plugin
         run: |
           cp -r ./plugin/* ./build/windows/runner/Release
-      - name: Get current data
+      - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       - name: Archive zip file
