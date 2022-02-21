@@ -6,7 +6,9 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches: [master]
+  pull_request:
+    branches: [master]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -22,29 +24,39 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
       - uses: subosito/flutter-action@v1
         with:
           channel: stable
-      - name: Build release
+      - name: Flutter build windows
         run: |
           flutter pub get
           flutter build windows --release
-      - name: Copy file
+      - name: Copy plugin
         run: |
           cp -r ./plugin/* ./build/windows/runner/Release
-      - name: Zip
-        run: |
-          7z a release-${{ steps.get_version.outputs.VERSION }}.zip ./build/windows/runner/Release/*
-      - name: Print
-        run: |
-          echo $pwd
+      - name: Get current data
+        id: get-date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - name: Archive zip file
+        uses: thedoctor0/zip-release@master
+        with:
+          directory: ./build/windows/runner/Release
+          filename: fd-${{ steps.date.outputs.date }}.zip
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: fd-${{ github.run_number }}
+          release_name: fd-${{ steps.date.outputs.date }}-${{ github.run_number }}
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./build/windows/runner/Release/fd-${{ steps.date.outputs.date }}.zip
+          asset_name: fd-${{ steps.date.outputs.date }}-${{ github.run_number }}.zip
+          asset_content_type: application/zip
