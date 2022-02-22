@@ -22,7 +22,7 @@ class ApiService {
           ''' WHERE $colorCondition AND $nameCondition''',
         );
 
-    log(list);
+    // log(list);
 
     return list[0]['COUNT(*)'];
   }
@@ -59,6 +59,8 @@ class ApiService {
     //   return products;
     // }
 
+    log("queryProducts=========$list");
+
     return list;
   }
 
@@ -67,7 +69,7 @@ class ApiService {
   ///
   static Future<List<String>> queryColors() async {
     List list = await DatabaseHelper().db.rawQuery('select distinct color from product');
-    log(list);
+    // log(list);
     return list.map<String>((e) => e['color']).toList()..insert(0, '全部');
   }
 

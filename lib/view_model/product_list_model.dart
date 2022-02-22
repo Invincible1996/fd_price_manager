@@ -63,6 +63,7 @@ class ProductListModel with ChangeNotifier {
   queryCount({String? name, String? color}) async {
     var count = await ApiService.queryCount(name: selectedProductName, color: selectedColor);
     totalCount = count;
+    log('queryCount: $count');
     notifyListeners();
   }
 
@@ -98,8 +99,13 @@ class ProductListModel with ChangeNotifier {
     try {
       await queryCount(name: selectedProductName, color: selectedColor);
       final res = await ApiService.queryProducts(pageSize: pageSize, offset: offset, color: color, name: name);
+      log('res: $res');
       products.clear();
-      products.addAll(res);
+      products = [...products]..addAll(res);
+      // ..clear()
+      // ..addAll([res]);
+      // products.clear();
+      // products.addAll(res);
       notifyListeners();
     } catch (e) {
       log(e);
@@ -134,7 +140,7 @@ class ProductListModel with ChangeNotifier {
       ..['discountTotalPrices'] = ((price * (1 - assembleSelectedDiscount / 100)) * assembleSelectedCount).toStringAsFixed(2);
 
     assembleProducts.add(assembleProduct);
-    log(assembleProducts);
+    // log(assembleProducts);
     notifyListeners();
   }
 
@@ -143,7 +149,7 @@ class ProductListModel with ChangeNotifier {
   ///
   removeAssembleProducts(Map item) {
     assembleProducts.remove(item);
-    log(assembleProducts);
+    // log(assembleProducts);
     notifyListeners();
   }
 
@@ -152,7 +158,7 @@ class ProductListModel with ChangeNotifier {
   ///
   clearAssembleProducts() {
     assembleProducts.clear();
-    log(assembleProducts);
+    // log(assembleProducts);
     notifyListeners();
   }
 
@@ -177,7 +183,7 @@ class ProductListModel with ChangeNotifier {
     assembleProducts[index]['totalPrices'] = (assembleProducts[index]['price'] * editCount).toStringAsFixed(2);
     assembleProducts[index]['discountPrice'] = (assembleProducts[index]['price'] * (1 - editDiscount / 100)).toStringAsFixed(2);
     assembleProducts[index]['discountTotalPrices'] = (assembleProducts[index]['price'] * (1 - editDiscount / 100) * editCount).toStringAsFixed(2);
-    log(assembleProducts);
+    // log(assembleProducts);
     notifyListeners();
   }
 }

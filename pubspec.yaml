@@ -43,6 +43,7 @@ dependencies:
   syncfusion_flutter_xlsio: ^19.4.52-beta
   flutter_easyloading: ^3.0.3
   window_manager: ^0.1.6
+  tuple: ^2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
