@@ -2,6 +2,7 @@ import 'package:fd_price_manager/m_colors.dart';
 import 'package:fd_price_manager/pages/index_page.dart';
 import 'package:fd_price_manager/view_model/product_list_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
             Theme.of(context).textTheme, // If this is not set, then ThemeData.light().textTheme is used.
           ),
         ),
+        builder: EasyLoading.init(),
         home: const IndexPage(),
       ),
     );

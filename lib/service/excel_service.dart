@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xlsio;
 
 import '../model/table_columns_model.dart';
@@ -70,9 +71,8 @@ class ExcelService {
   /// @desc 导出excel
   static void export(List dataList, List<TableColumnsModel> columns) async {
     log(dataList);
-
+    EasyLoading.showToast('列表不能为空');
     if (dataList.isEmpty) {
-      log("请先导入客户账单");
       return;
     }
 

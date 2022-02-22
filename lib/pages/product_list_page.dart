@@ -132,14 +132,14 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
                           },
                         ),
                         const SizedBox(width: 20),
-                        ElevatedButton.icon(
-                          onPressed: () async {},
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(50, 40),
-                          ),
-                          icon: const Icon(Icons.search_rounded),
-                          label: const Text('搜索'),
-                        ),
+                        // ElevatedButton.icon(
+                        //   onPressed: () async {},
+                        //   style: ElevatedButton.styleFrom(
+                        //     minimumSize: const Size(50, 40),
+                        //   ),
+                        //   icon: const Icon(Icons.search_rounded),
+                        //   label: const Text('搜索'),
+                        // ),
                       ],
                     ),
                     Row(
