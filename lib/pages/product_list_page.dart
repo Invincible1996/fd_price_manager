@@ -9,10 +9,13 @@ import 'package:tuple/tuple.dart';
 import '../m_colors.dart';
 import '../model/table_columns_model.dart';
 import '../service/database_helper.dart';
+import '../service/excel_service.dart';
 import '../util/dialog_util.dart';
 import '../util/log.dart';
 import '../view_model/product_list_model.dart';
+import '../widget/custom_select.dart';
 import '../widget/custom_table.dart';
+import '../widget/select.dart';
 
 class ProductListPage extends StatefulWidget {
   const ProductListPage({Key? key}) : super(key: key);
@@ -70,6 +73,7 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final productModel = Provider.of<ProductListModel>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
@@ -84,79 +88,79 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
         color: MColors.bgColor,
         child: Column(
           children: [
-            // Container(
-            //   height: 120,
-            //   padding: const EdgeInsets.all(10),
-            //   decoration: const BoxDecoration(
-            //     color: Colors.white,
-            //   ),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //     children: [
-            //       Row(
-            //         children: [
-            //           CustomSelect<String>(
-            //             defaultValue: '全部',
-            //             title: '颜色',
-            //             onItemSelected: (String value) async {
-            //               model.selectedColor = value;
-            //               await model.queryProducts(
-            //                 offset: 0,
-            //                 color: model.selectedColor,
-            //                 name: model.selectedProductName,
-            //               );
-            //             },
-            //             options: model.colors,
-            //           ),
-            //           const SizedBox(width: 20),
-            //           CustomSelect<String>(
-            //             defaultValue: '全部',
-            //             width: 150,
-            //             menuType: MenuType.wrap,
-            //             // selectType: SelectType.search,
-            //             onSearch: (String text) async {},
-            //             options: model.productNames,
-            //             title: '名称',
-            //             onItemSelected: (String value) async {
-            //               model.selectedProductName = value;
-            //               await model.queryProducts(
-            //                 offset: 0,
-            //                 color: model.selectedColor,
-            //                 name: model.selectedProductName,
-            //               );
-            //             },
-            //           ),
-            //         ],
-            //       ),
-            //       Row(
-            //         children: [
-            //           ElevatedButton.icon(
-            //             onPressed: () {
-            //               ExcelService.import();
-            //             },
-            //             style: ElevatedButton.styleFrom(
-            //               minimumSize: const Size(120, 45),
-            //             ),
-            //             icon: const Icon(Icons.cloud_upload),
-            //             label: const Text('导入商品数据'),
-            //           ),
-            //           const SizedBox(
-            //             width: 10,
-            //           ),
-            //           ElevatedButton.icon(
-            //             onPressed: () {},
-            //             style: ElevatedButton.styleFrom(
-            //               primary: Colors.red,
-            //               minimumSize: const Size(120, 45),
-            //             ),
-            //             icon: const Icon(Icons.dangerous),
-            //             label: const Text('清空商品数据'),
-            //           ),
-            //         ],
-            //       ),
-            //     ],
-            //   ),
-            // ),
+            Container(
+              height: 120,
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      CustomSelect<String>(
+                        defaultValue: '全部',
+                        title: '颜色',
+                        onItemSelected: (String value) async {
+                          productModel.selectedColor = value;
+                          await productModel.queryProducts(
+                            offset: 0,
+                            color: productModel.selectedColor,
+                            name: productModel.selectedProductName,
+                          );
+                        },
+                        options: productModel.colors,
+                      ),
+                      const SizedBox(width: 20),
+                      CustomSelect<String>(
+                        defaultValue: '全部',
+                        width: 150,
+                        menuType: MenuType.wrap,
+                        // selectType: SelectType.search,
+                        onSearch: (String text) async {},
+                        options: productModel.productNames,
+                        title: '名称',
+                        onItemSelected: (String value) async {
+                          productModel.selectedProductName = value;
+                          await productModel.queryProducts(
+                            offset: 0,
+                            color: productModel.selectedColor,
+                            name: productModel.selectedProductName,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          ExcelService.import();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(120, 45),
+                        ),
+                        icon: const Icon(Icons.cloud_upload),
+                        label: const Text('导入商品数据'),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.red,
+                          minimumSize: const Size(120, 45),
+                        ),
+                        icon: const Icon(Icons.dangerous),
+                        label: const Text('清空商品数据'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -170,7 +174,6 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
                 ),
                 builder: (context, model, _) {
                   log('build========${model.item1}');
-
                   return CustomTable(
                     data: model.item1,
                     selectedIndex: model.item2,
@@ -178,36 +181,38 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
                     pageSize: model.item4,
                     columns: columns,
                     onTapNext: () async {
-                      // var totalGroupSize = (model.totalCount / model.pageSize).ceilToDouble().toInt();
-                      // if (model.offset == totalGroupSize - 1) {
-                      //   return;
-                      // }
-                      // model.offset++;
-                      // model.queryProducts(
-                      //   offset: model.offset,
-                      //   color: model.selectedColor,
-                      //   name: model.selectedProductName,
-                      // );
+                      print('$model.item2');
+
+                      var totalGroupSize = (productModel.totalCount / productModel.pageSize).ceilToDouble().toInt();
+                      if (productModel.offset == totalGroupSize - 1) {
+                        return;
+                      }
+                      productModel.offset++;
+                      productModel.queryProducts(
+                        offset: productModel.offset,
+                        color: productModel.selectedColor,
+                        name: productModel.selectedProductName,
+                      );
                     },
                     onTapPrevious: () async {
-                      // if (model.offset == 0) {
-                      //   return;
-                      // }
-                      // model.offset--;
-                      // model.queryProducts(
-                      //   offset: model.offset,
-                      //   color: model.selectedColor,
-                      //   name: model.selectedProductName,
-                      // );
+                      if (productModel.offset == 0) {
+                        return;
+                      }
+                      productModel.offset--;
+                      productModel.queryProducts(
+                        offset: productModel.offset,
+                        color: productModel.selectedColor,
+                        name: productModel.selectedProductName,
+                      );
                     },
                     onTapPageIndex: (index) async {
                       // log(index);
-                      // model.offset = index;
-                      // model.queryProducts(
-                      //   offset: model.offset,
-                      //   color: model.selectedColor,
-                      //   name: model.selectedProductName,
-                      // );
+                      productModel.offset = index;
+                      productModel.queryProducts(
+                        offset: productModel.offset,
+                        color: productModel.selectedColor,
+                        name: productModel.selectedProductName,
+                      );
                     },
                   );
                 },

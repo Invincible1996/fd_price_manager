@@ -15,7 +15,7 @@ void main() async {
   // Use it only after calling `hiddenWindowAtLaunch`
   windowManager.waitUntilReadyToShow().then((_) async {
     // Hide window title bar
-    await windowManager.setTitleBarStyle('hidden');
+    // await windowManager.setTitleBarStyle('hidden');
     await windowManager.setSize(Size(1300, 800));
     await windowManager.center();
     await windowManager.show();
