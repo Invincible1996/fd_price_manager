@@ -8,6 +8,9 @@ import 'package:flutter/foundation.dart';
 import '../service/api_service.dart';
 import '../util/log.dart';
 
+///
+///
+///
 class ProductListModel with ChangeNotifier {
   // 所有商品
   List<Map> products = [];
@@ -128,8 +131,7 @@ class ProductListModel with ChangeNotifier {
       ..['price'] = price
       ..['totalPrices'] = (assembleSelectedCount * price).toStringAsFixed(2)
       ..['discountPrice'] = ((price * (1 - assembleSelectedDiscount / 100))).toStringAsFixed(2)
-      ..['discountTotalPrices'] =
-          ((price * (1 - assembleSelectedDiscount / 100)) * assembleSelectedCount).toStringAsFixed(2);
+      ..['discountTotalPrices'] = ((price * (1 - assembleSelectedDiscount / 100)) * assembleSelectedCount).toStringAsFixed(2);
 
     assembleProducts.add(assembleProduct);
     log(assembleProducts);
@@ -173,10 +175,8 @@ class ProductListModel with ChangeNotifier {
     assembleProducts[index]['count'] = editCount;
     assembleProducts[index]['discount'] = editDiscount;
     assembleProducts[index]['totalPrices'] = (assembleProducts[index]['price'] * editCount).toStringAsFixed(2);
-    assembleProducts[index]['discountPrice'] =
-        (assembleProducts[index]['price'] * (1 - editDiscount / 100)).toStringAsFixed(2);
-    assembleProducts[index]['discountTotalPrices'] =
-        (assembleProducts[index]['price'] * (1 - editDiscount / 100) * editCount).toStringAsFixed(2);
+    assembleProducts[index]['discountPrice'] = (assembleProducts[index]['price'] * (1 - editDiscount / 100)).toStringAsFixed(2);
+    assembleProducts[index]['discountTotalPrices'] = (assembleProducts[index]['price'] * (1 - editDiscount / 100) * editCount).toStringAsFixed(2);
     log(assembleProducts);
     notifyListeners();
   }

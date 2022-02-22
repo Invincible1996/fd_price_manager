@@ -9,11 +9,14 @@ import '../m_colors.dart';
 import '../util/log.dart';
 import 'custom_dialog.dart';
 
+///
 enum SelectType {
   search,
   custom,
 }
 
+///
+///
 enum MenuType {
   list,
   wrap,
