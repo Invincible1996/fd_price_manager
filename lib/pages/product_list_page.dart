@@ -175,7 +175,8 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
                 builder: (context, model, _) {
                   log('build========${model.item1}');
                   return CustomTable(
-                    data: model.item1,
+                    data: [],
+                    // data: model.item1,
                     selectedIndex: model.item2,
                     totalCount: model.item3,
                     pageSize: model.item4,

@@ -102,10 +102,6 @@ class ProductListModel with ChangeNotifier {
       log('res: $res');
       products.clear();
       products = [...products]..addAll(res);
-      // ..clear()
-      // ..addAll([res]);
-      // products.clear();
-      // products.addAll(res);
       notifyListeners();
     } catch (e) {
       log(e);
@@ -140,7 +136,6 @@ class ProductListModel with ChangeNotifier {
       ..['discountTotalPrices'] = ((price * (1 - assembleSelectedDiscount / 100)) * assembleSelectedCount).toStringAsFixed(2);
 
     assembleProducts.add(assembleProduct);
-    // log(assembleProducts);
     notifyListeners();
   }
 
@@ -149,7 +144,6 @@ class ProductListModel with ChangeNotifier {
   ///
   removeAssembleProducts(Map item) {
     assembleProducts.remove(item);
-    // log(assembleProducts);
     notifyListeners();
   }
 
@@ -158,7 +152,6 @@ class ProductListModel with ChangeNotifier {
   ///
   clearAssembleProducts() {
     assembleProducts.clear();
-    // log(assembleProducts);
     notifyListeners();
   }
 
@@ -183,7 +176,6 @@ class ProductListModel with ChangeNotifier {
     assembleProducts[index]['totalPrices'] = (assembleProducts[index]['price'] * editCount).toStringAsFixed(2);
     assembleProducts[index]['discountPrice'] = (assembleProducts[index]['price'] * (1 - editDiscount / 100)).toStringAsFixed(2);
     assembleProducts[index]['discountTotalPrices'] = (assembleProducts[index]['price'] * (1 - editDiscount / 100) * editCount).toStringAsFixed(2);
-    // log(assembleProducts);
     notifyListeners();
   }
 }

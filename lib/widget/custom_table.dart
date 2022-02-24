@@ -3,6 +3,8 @@
 /// @author: kevin
 /// @description: dart
 ///
+import 'package:fd_price_manager/util/log.dart';
+import 'package:fd_price_manager/widget/pagination.dart';
 import 'package:flutter/material.dart';
 
 import '../m_colors.dart';
@@ -113,8 +115,7 @@ class CustomTable extends StatelessWidget {
                                         Container(
                                           alignment: Alignment.center,
                                           height: 40,
-                                          child: (e.builder?.call(key1, item)) ??
-                                              Text(e.dataIndex == 'index' ? '${key1 + 1}' : '${item[e.dataIndex]}'),
+                                          child: (e.builder?.call(key1, item)) ?? Text(e.dataIndex == 'index' ? '${key1 + 1}' : '${item[e.dataIndex]}'),
                                         ),
                                       ),
                                     )
@@ -130,122 +131,15 @@ class CustomTable extends StatelessWidget {
                 ),
         ),
         isShowPagination
-            ? Container(
-                height: 45,
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border(
-                    top: BorderSide(
-                      width: 1,
-                      color: MColors.divideColor,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    InkWell(
-                      borderRadius: BorderRadius.circular(5),
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(color: MColors.divideColor),
-                        ),
-                        child: const Icon(Icons.keyboard_arrow_left_rounded, size: 22),
-                      ),
-                      onTap: () {
-                        onTapPrevious();
-                      },
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    _buildPageIndex(),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(5),
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(color: MColors.divideColor),
-                        ),
-                        child: const Icon(Icons.keyboard_arrow_right_rounded, size: 22),
-                      ),
-                      onTap: () {
-                        onTapNext();
-                      },
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    // InkWell(
-                    //   onTap: () {},
-                    //   child: Container(
-                    //     // width: 100
-                    //     padding: const EdgeInsets.all(4),
-                    //     height: 30,
-                    //     decoration: BoxDecoration(
-                    //         border: Border.all(
-                    //       width: 1,
-                    //       color: MColors.divideColor,
-                    //       // color: MColors.primaryColor,
-                    //     )),
-                    //     child: Row(
-                    //       children: const [
-                    //         Text('10条/页'),
-                    //         Icon(Icons.arrow_drop_down),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // )
-                  ],
-                ),
+            ? Pagination(
+                totalPage: 100,
+                onPageChanged: (currentPage, pageSize) {
+                  log(currentPage);
+                  log(pageSize);
+                },
               )
             : const SizedBox.shrink()
       ],
-    );
-  }
-
-  ///
-  ///
-  ///
-  ///
-  _buildPageIndex() {
-    var totalGroupSize = (totalCount / pageSize).ceilToDouble().toInt();
-    return Wrap(
-      spacing: 10,
-      children: List.generate(
-        totalGroupSize,
-        (index) => InkWell(
-          onTap: () {
-            onTapPageIndex(index);
-          },
-          child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(
-                color: index == selectedIndex ? MColors.primaryColor : MColors.divideColor,
-              ),
-            ),
-            width: 30,
-            height: 30,
-            child: Text(
-              '${index + 1}',
-              style: TextStyle(
-                color: index == selectedIndex ? MColors.primaryColor : MColors.textColor,
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
