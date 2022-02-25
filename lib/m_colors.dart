@@ -29,5 +29,6 @@ class MColors {
 
   static Color bgColor = const Color(0xFFf5f5f5);
 
-  static Color tableHeaderBgcolor = const Color(0xFFf9f9f9);
+  static Color tableHeaderBgColor = const Color(0xFFf9f9f9);
+  static Color disabledColor = const Color(0xFFd3d3d3);
 }

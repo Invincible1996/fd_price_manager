@@ -95,7 +95,7 @@ class ProductListModel with ChangeNotifier {
   /// @param [color]
   /// @description: 根据条件查询商品
   ///
-  queryProducts({required int offset, String? color, String? name}) async {
+  queryProducts({required int offset, String? color, String? name, int pageSize = 10}) async {
     try {
       await queryCount(name: selectedProductName, color: selectedColor);
       final res = await ApiService.queryProducts(pageSize: pageSize, offset: offset, color: color, name: name);

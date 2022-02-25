@@ -345,7 +345,7 @@ class _AssemblePricePageState extends State<AssemblePricePage> with AutomaticKee
                         primary: Colors.red,
                       ),
                       onPressed: () {
-                        showCustomDialog(context, title: '提示', content: '确定清除吗？', onConfirm: () {
+                        showConfirmDialog(context, title: '提示', content: '确定清除吗？', onConfirm: () {
                           model.clearAssembleProducts();
                         });
                       },
@@ -361,9 +361,6 @@ class _AssemblePricePageState extends State<AssemblePricePage> with AutomaticKee
                   data: model.assembleProducts,
                   totalCount: 0,
                   pageSize: 0,
-                  onTapPageIndex: (int value) {},
-                  onTapPrevious: () {},
-                  onTapNext: () {},
                   selectedIndex: 0,
                   columns: columns,
                 ),

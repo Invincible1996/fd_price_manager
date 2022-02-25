@@ -3,7 +3,6 @@
 /// @author: kevin
 /// @description: dart
 ///
-import 'package:fd_price_manager/util/log.dart';
 import 'package:fd_price_manager/widget/pagination.dart';
 import 'package:flutter/material.dart';
 
@@ -16,10 +15,8 @@ class CustomTable extends StatelessWidget {
   final int totalCount;
   final int pageSize;
   final int selectedIndex;
-  final Function(int) onTapPageIndex;
-  final Function() onTapPrevious;
-  final Function() onTapNext;
   final bool isShowPagination;
+  final Function(int, int)? onPageChanged;
 
   const CustomTable({
     Key? key,
@@ -27,11 +24,9 @@ class CustomTable extends StatelessWidget {
     required this.data,
     required this.totalCount,
     required this.pageSize,
-    required this.onTapPageIndex,
-    required this.onTapPrevious,
-    required this.onTapNext,
     required this.selectedIndex,
     this.isShowPagination = true,
+    this.onPageChanged,
   }) : super(key: key);
 
   @override
@@ -45,7 +40,7 @@ class CustomTable extends StatelessWidget {
           children: [
             TableRow(
               decoration: BoxDecoration(
-                color: MColors.tableHeaderBgcolor,
+                color: MColors.tableHeaderBgColor,
                 border: Border(
                   bottom: BorderSide(
                     width: 1,
@@ -57,7 +52,7 @@ class CustomTable extends StatelessWidget {
                   .map(
                     (e) => Container(
                       height: 40,
-                      color: MColors.tableHeaderBgcolor,
+                      color: MColors.tableHeaderBgColor,
                       alignment: Alignment.center,
                       child: Text(
                         '${e.title}',
@@ -132,11 +127,8 @@ class CustomTable extends StatelessWidget {
         ),
         isShowPagination
             ? Pagination(
-                totalPage: 100,
-                onPageChanged: (currentPage, pageSize) {
-                  log(currentPage);
-                  log(pageSize);
-                },
+                totalCount: totalCount,
+                onPageChanged: onPageChanged,
               )
             : const SizedBox.shrink()
       ],

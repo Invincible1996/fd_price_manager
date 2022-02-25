@@ -57,7 +57,7 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
               TextButton(onPressed: () {}, child: Text('编辑')),
               TextButton(
                   onPressed: () {
-                    showCustomDialog(context, title: '提示', content: '确认删除该商品？', onConfirm: () {});
+                    showConfirmDialog(context, title: '提示', content: '确认删除该商品？', onConfirm: () {});
                   },
                   child: Text('删除')),
             ],
@@ -175,44 +175,17 @@ class _ProductListPageState extends State<ProductListPage> with AutomaticKeepAli
                 builder: (context, model, _) {
                   log('build========${model.item1}');
                   return CustomTable(
-                    data: [],
-                    // data: model.item1,
+                    data: model.item1,
                     selectedIndex: model.item2,
                     totalCount: model.item3,
                     pageSize: model.item4,
                     columns: columns,
-                    onTapNext: () async {
-                      print('$model.item2');
-
-                      var totalGroupSize = (productModel.totalCount / productModel.pageSize).ceilToDouble().toInt();
-                      if (productModel.offset == totalGroupSize - 1) {
-                        return;
-                      }
-                      productModel.offset++;
-                      productModel.queryProducts(
-                        offset: productModel.offset,
+                    onPageChanged: (pageIndex, pageSize) async {
+                      await productModel.queryProducts(
+                        offset: pageIndex,
                         color: productModel.selectedColor,
                         name: productModel.selectedProductName,
-                      );
-                    },
-                    onTapPrevious: () async {
-                      if (productModel.offset == 0) {
-                        return;
-                      }
-                      productModel.offset--;
-                      productModel.queryProducts(
-                        offset: productModel.offset,
-                        color: productModel.selectedColor,
-                        name: productModel.selectedProductName,
-                      );
-                    },
-                    onTapPageIndex: (index) async {
-                      // log(index);
-                      productModel.offset = index;
-                      productModel.queryProducts(
-                        offset: productModel.offset,
-                        color: productModel.selectedColor,
-                        name: productModel.selectedProductName,
+                        pageSize: pageSize,
                       );
                     },
                   );

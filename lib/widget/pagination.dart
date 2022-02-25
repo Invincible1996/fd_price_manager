@@ -3,6 +3,7 @@
 /// @author: kevin
 /// @description: dart
 import 'package:fd_price_manager/util/log.dart';
+import 'package:fd_price_manager/widget/page_size_select.dart';
 import 'package:flutter/material.dart';
 
 import '../m_colors.dart';
@@ -15,14 +16,14 @@ enum PageIndexType {
 class Pagination extends StatefulWidget {
   final int currentPage;
 
-  final int totalPage;
+  final int totalCount;
 
   final Function(int, int)? onPageChanged;
 
   const Pagination({
     Key? key,
     this.currentPage = 0,
-    required this.totalPage,
+    required this.totalCount,
     this.onPageChanged,
   }) : super(key: key);
 
@@ -43,11 +44,21 @@ class _PaginationState extends State<Pagination> {
   initState() {
     super.initState();
     _selectedIndex = widget.currentPage;
-    totalGroupSize = (widget.totalPage / pageSize).ceilToDouble().toInt();
+  }
+
+  didUpdateWidget(Pagination oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // 如果totalCount发生变化，需要设置当前页为0
+    if (oldWidget.totalCount != widget.totalCount) {
+      _selectedIndex = 0;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    log('totalCount: ${widget.totalCount}');
+
+    totalGroupSize = (widget.totalCount / pageSize).ceilToDouble().toInt();
     return Container(
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -71,19 +82,25 @@ class _PaginationState extends State<Pagination> {
                 height: 30,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
-                  border: Border.all(color: MColors.divideColor),
+                  border: Border.all(color: _selectedIndex == 0 ? MColors.disabledColor : MColors.divideColor),
                 ),
-                child: const Icon(Icons.keyboard_arrow_left_rounded, size: 22),
+                child: Icon(
+                  Icons.keyboard_arrow_left_rounded,
+                  size: 22,
+                  color: _selectedIndex == 0 ? MColors.disabledColor : MColors.textColor,
+                ),
               ),
-              onTap: () {
-                if (_selectedIndex == 0) {
-                  return;
-                }
-                setState(() {
-                  _selectedIndex--;
-                });
-                widget.onPageChanged?.call(_selectedIndex, pageSize);
-              },
+              onTap: _selectedIndex == 0
+                  ? null
+                  : () {
+                      if (_selectedIndex == 0) {
+                        return;
+                      }
+                      setState(() {
+                        _selectedIndex--;
+                      });
+                      widget.onPageChanged?.call(_selectedIndex, pageSize);
+                    },
             ),
           ),
           const SizedBox(
@@ -103,43 +120,38 @@ class _PaginationState extends State<Pagination> {
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: MColors.divideColor),
                 ),
-                child: const Icon(Icons.keyboard_arrow_right_rounded, size: 22),
+                child: Icon(
+                  Icons.keyboard_arrow_right_rounded,
+                  size: 22,
+                  color: _selectedIndex == totalGroupSize - 1 ? MColors.disabledColor : MColors.textColor,
+                ),
               ),
-              onTap: () {
-                if (_selectedIndex == totalGroupSize - 1) {
-                  return;
-                }
-                setState(() {
-                  _selectedIndex++;
-                });
-                widget.onPageChanged?.call(_selectedIndex, pageSize);
-              },
+              onTap: _selectedIndex == totalGroupSize - 1
+                  ? null
+                  : () {
+                      if (_selectedIndex == totalGroupSize - 1) {
+                        return;
+                      }
+                      setState(() {
+                        _selectedIndex++;
+                      });
+                      widget.onPageChanged?.call(_selectedIndex, pageSize);
+                    },
             ),
           ),
           const SizedBox(
             width: 10,
           ),
-          Material(
-            child: InkWell(
-              onTap: () {},
-              child: Container(
-                // width: 100
-                padding: const EdgeInsets.all(4),
-                height: 30,
-                decoration: BoxDecoration(
-                    border: Border.all(
-                  width: 1,
-                  color: MColors.divideColor,
-                  // color: MColors.primaryColor,
-                )),
-                child: Row(
-                  children: [
-                    Text('$pageSize条/页'),
-                    Icon(Icons.arrow_drop_down),
-                  ],
-                ),
-              ),
-            ),
+          PageSizeSelect(
+            pageSizeList: [10, 20, 30, 50, 100],
+            onPageSizeChanged: (int value) {
+              log(value);
+              setState(() {
+                pageSize = value;
+                _selectedIndex = 0;
+              });
+              widget.onPageChanged?.call(_selectedIndex, pageSize);
+            },
           )
         ],
       ),
@@ -151,20 +163,13 @@ class _PaginationState extends State<Pagination> {
   ///
   ///
   _buildPageIndexView() {
-    log('totalGroupSize====$totalGroupSize');
-    if (totalGroupSize <= 5) {
-      return Wrap(
-        children: List.generate(
-          totalGroupSize,
-          (index) => Text('${index + 1}'),
+    return Container(
+        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: MColors.divideColor),
         ),
-      );
-    } else {
-      // 大于5
-      // 判断current page
-
-      return SizedBox.shrink();
-    }
+        child: Text('${(_selectedIndex) * pageSize + 1}-${(pageSize * (_selectedIndex + 1)) > widget.totalCount ? widget.totalCount : pageSize * (_selectedIndex + 1)} 共${widget.totalCount}'));
   }
 
   @override
